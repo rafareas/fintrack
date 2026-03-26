@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-dark-900 text-gray-100 font-sans antialiased min-h-screen selection:bg-neon-blue selection:text-dark-900;
+  }
+  
+  /* Esconder scrollbar gerando aspecto minimalista - mas usável */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-white/20;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-dark-glass backdrop-blur-2xl border border-white/10 shadow-xl shadow-black/50 rounded-2xl;
+  }
+  
+  .glass-input {
+    @apply bg-black/20 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/50 transition-all;
+  }
+
+  .btn-primary {
+    @apply bg-white/5 text-white border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all font-medium rounded-xl px-6 py-3 flex items-center justify-center gap-2;
+  }
+
+  .btn-neon-green {
+    @apply bg-neon-green/10 text-neon-green border border-neon-green/30 hover:bg-neon-green/20 hover:border-neon-green/60 transition-all shadow-[0_0_15px_rgba(0,255,136,0.1)] hover:shadow-[0_0_20px_rgba(0,255,136,0.25)] font-medium rounded-xl px-6 py-3 flex items-center justify-center gap-2;
+  }
+
+  .btn-neon-pink {
+    @apply bg-neon-pink/10 text-neon-pink border border-neon-pink/30 hover:bg-neon-pink/20 hover:border-neon-pink/60 transition-all shadow-[0_0_15px_rgba(255,0,127,0.1)] hover:shadow-[0_0_20px_rgba(255,0,127,0.25)] font-medium rounded-xl px-6 py-3 flex items-center justify-center gap-2;
+  }
+  
+  /* Utilitários fluídos de badge/tag */
+  .tag-green {
+    @apply bg-neon-green/10 text-neon-green border border-neon-green/20 text-xs px-2 py-1 rounded-md font-medium;
+  }
+  .tag-pink {
+    @apply bg-neon-pink/10 text-neon-pink border border-neon-pink/20 text-xs px-2 py-1 rounded-md font-medium;
+  }
+}
