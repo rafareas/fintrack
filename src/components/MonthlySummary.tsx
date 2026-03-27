@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Transaction } from '../types';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell as ReCell } from 'recharts';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { CATEGORIES, EXPENSE_CATEGORIES } from '../constants/categories';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatCurrency } from '../utils/formatters';
@@ -89,11 +89,6 @@ export function MonthlySummary({ transactions, month, year }: Props) {
   const barData = [
     { name: 'Receitas', valor: income, fill: '#00ff88' },
     { name: 'Despesas', valor: expense, fill: '#ff007f' },
-  ];
-
-  const budgetBarData = [
-    { name: 'Teto Meta', valor: budget?.limit_amount || 0, fill: 'rgba(255,255,255,0.1)' },
-    { name: 'Gasto Real', valor: budgetActual, fill: budgetProgress > 100 ? '#ff007f' : '#00e5ff' },
   ];
 
   return (
@@ -192,82 +187,63 @@ export function MonthlySummary({ transactions, month, year }: Props) {
         </AnimatePresence>
 
         {budget ? (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-5 space-y-6">
-              <div className="bg-black/20 rounded-2xl p-5 border border-white/5 shadow-inner">
-                <div className="flex justify-between items-end mb-4">
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Gasto Atual no Teto</p>
-                    <p className={cn("text-3xl font-black tabular-nums", budgetProgress > 100 ? "text-neon-pink" : "text-neon-blue")}>
-                      {formatCurrency(budgetActual)}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Limite Meta</p>
-                    <p className="text-xl font-bold text-white/80">{formatCurrency(budget.limit_amount)}</p>
-                  </div>
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="bg-black/20 rounded-2xl p-6 border border-white/5 shadow-inner">
+              <div className="flex justify-between items-end mb-5">
+                <div>
+                  <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Gasto Atual no Teto</p>
+                  <p className={cn("text-4xl font-black tabular-nums", budgetProgress > 100 ? "text-neon-pink" : "text-neon-blue")}>
+                    {formatCurrency(budgetActual)}
+                  </p>
                 </div>
-                
-                <div className="relative h-4 bg-white/5 rounded-full overflow-hidden border border-white/5">
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.min(budgetProgress, 100)}%` }}
-                    className={cn(
-                      "absolute top-0 left-0 h-full rounded-full shadow-[0_0_15px_rgba(0,0,0,0.5)]",
-                      budgetProgress > 90 ? "bg-neon-pink" : "bg-neon-blue"
-                    )}
-                  />
-                  {budgetProgress > 100 && (
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="absolute inset-0 bg-neon-pink/20 animate-pulse"
-                    />
-                  )}
-                </div>
-
-                <div className="flex justify-between mt-3">
-                  <span className="text-[10px] font-bold text-gray-500 uppercase">0%</span>
-                  {budgetProgress > 100 ? (
-                    <span className="text-[10px] font-bold text-neon-pink uppercase flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" /> Excedeu teto em {formatCurrency(budgetActual - budget.limit_amount)}
-                    </span>
-                  ) : (
-                    <span className="text-[10px] font-bold text-gray-500 uppercase">Restam {formatCurrency(budget.limit_amount - budgetActual)}</span>
-                  )}
-                  <span className="text-[10px] font-bold text-gray-500 uppercase">100%</span>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Limite Meta</p>
+                  <p className="text-2xl font-bold text-white/80">{formatCurrency(budget.limit_amount)}</p>
                 </div>
               </div>
               
-              <div className="flex flex-wrap gap-1.5">
-                {budget.selected_categories.map(catId => {
-                  const c = Object.values(CATEGORIES).find(c => c.id === catId);
-                  return (
-                    <span key={catId} className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-[10px] text-gray-400 font-medium">
-                      {c?.name}
-                    </span>
-                  );
-                })}
+              <div className="relative h-5 bg-white/5 rounded-full overflow-hidden border border-white/5 p-0.5">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(budgetProgress, 100)}%` }}
+                  className={cn(
+                    "h-full rounded-full shadow-[0_0_15px_rgba(0,0,0,0.5)] transition-colors duration-500",
+                    budgetProgress > 90 ? "bg-neon-pink" : "bg-neon-blue"
+                  )}
+                />
+                {budgetProgress > 100 && (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute inset-0 bg-neon-pink/20 animate-pulse"
+                  />
+                )}
+              </div>
+
+              <div className="flex justify-between mt-4">
+                <span className="text-[11px] font-bold text-gray-500 uppercase">0%</span>
+                {budgetProgress > 100 ? (
+                  <span className="text-[11px] font-bold text-neon-pink uppercase flex items-center gap-1.5 px-3 py-1 bg-neon-pink/10 rounded-lg">
+                    <AlertCircle className="w-3.5 h-3.5" /> Excedeu teto em {formatCurrency(budgetActual - budget.limit_amount)}
+                  </span>
+                ) : (
+                  <span className="text-[11px] font-bold text-gray-400 uppercase bg-white/5 px-3 py-1 rounded-lg">
+                    Restam {formatCurrency(budget.limit_amount - budgetActual)}
+                  </span>
+                )}
+                <span className="text-[11px] font-bold text-gray-500 uppercase">100%</span>
               </div>
             </div>
-
-            <div className="lg:col-span-7 h-48 md:h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={budgetBarData} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
-                  <XAxis type="number" hide />
-                  <Tooltip 
-                    cursor={{ fill: 'rgba(255,255,255,0.03)' }}
-                    formatter={(value: any) => formatCurrency(Number(value) || 0)}
-                    contentStyle={{ backgroundColor: 'rgba(10,10,10,0.95)', backdropFilter: 'blur(10px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                    itemStyle={{ color: '#fff', fontWeight: '500' }}
-                  />
-                  <Bar dataKey="valor" radius={[0, 6, 6, 0]} barSize={32}>
-                    {budgetBarData.map((entry, index) => (
-                      <ReCell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+            
+            <div className="flex flex-wrap gap-2 justify-center">
+              {budget.selected_categories.map(catId => {
+                const c = Object.values(CATEGORIES).find(c => c.id === catId);
+                return (
+                  <span key={catId} className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-[11px] text-gray-400 font-semibold">
+                    {c?.name}
+                  </span>
+                );
+              })}
             </div>
           </div>
         ) : (
