@@ -117,6 +117,8 @@ export function MonthlySummary({ transactions, month, year }: Props) {
                   cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                   formatter={(value: any) => formatCurrency(Number(value) || 0)}
                   contentStyle={{ backgroundColor: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(10px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                  itemStyle={{ color: '#fff', fontWeight: '500' }}
+                  labelStyle={{ color: '#aaa', marginBottom: '8px' }}
                 />
                 <Bar dataKey="valor" radius={[6, 6, 0, 0]} maxBarSize={60}>
                   {barData.map((entry, index) => (
