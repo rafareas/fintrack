@@ -17,18 +17,6 @@ function App() {
   const { user, loading: authLoading } = useAuth();
   const { transactions, addTransaction, deleteTransaction } = useTransactions();
   const [activeTab, setActiveTab] = useState('transactions');
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-white/10 border-t-neon-blue rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Auth />;
-  }
   const [isFormOpen, setIsFormOpen] = useState(false);
   
   const currentDate = useMemo(() => new Date(), []);
@@ -65,6 +53,18 @@ function App() {
     );
     return { ...totals, filteredTransactions: filtered };
   }, [transactions, selectedMonth, selectedYear]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-white/10 border-t-neon-blue rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Auth />;
+  }
 
   const TABS = [
     { id: 'transactions', label: 'Transações', icon: <ListIcon className="w-4 h-4" /> },
