@@ -10,7 +10,8 @@ import {
   MonitorPlay,
   Briefcase,
   PlusCircle,
-  HelpCircle
+  HelpCircle,
+  ShoppingBag
 } from 'lucide-react';
 
 export const CATEGORIES = {
@@ -19,6 +20,7 @@ export const CATEGORIES = {
   OTHER_INCOME: { id: 'OTHER_INCOME', name: 'Outros', icon: PlusCircle, color: 'text-neon-green' },
   FOOD: { id: 'FOOD', name: 'Alimentação', icon: Utensils, color: 'text-neon-pink' },
   GROCERIES: { id: 'GROCERIES', name: 'Mercado', icon: ShoppingCart, color: 'text-neon-pink' },
+  SHOPPING: { id: 'SHOPPING', name: 'Compras', icon: ShoppingBag, color: 'text-neon-pink' },
   HOUSING: { id: 'HOUSING', name: 'Moradia', icon: Home, color: 'text-neon-pink' },
   TRANSPORT: { id: 'TRANSPORT', name: 'Transporte', icon: Car, color: 'text-neon-pink' },
   UTILITIES: { id: 'UTILITIES', name: 'Contas', icon: Zap, color: 'text-neon-pink' },
