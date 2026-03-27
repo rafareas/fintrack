@@ -8,12 +8,27 @@ import { TransactionForm } from './components/TransactionForm';
 import { MonthlySummary } from './components/MonthlySummary';
 import { AnnualSummary } from './components/AnnualSummary';
 import { useTransactions } from './hooks/useTransactions';
+import { useAuth } from './contexts/AuthContext';
+import { Auth } from './components/Auth';
 import { ListIcon, PieChart, TrendingUp, Calendar as CalendarIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 function App() {
+  const { user, loading: authLoading } = useAuth();
   const { transactions, addTransaction, deleteTransaction } = useTransactions();
   const [activeTab, setActiveTab] = useState('transactions');
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-white/10 border-t-neon-blue rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Auth />;
+  }
   const [isFormOpen, setIsFormOpen] = useState(false);
   
   const currentDate = useMemo(() => new Date(), []);

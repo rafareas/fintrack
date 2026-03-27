@@ -1,27 +1,35 @@
 import { useState, useEffect } from 'react';
 import { Transaction } from '../types';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 export function useTransactions() {
+  const { user } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch from Supabase on mount
+  // Fetch from Supabase on mount or when user changes
   useEffect(() => {
-    fetchTransactions();
-  }, []);
+    if (user) {
+      fetchTransactions();
+    } else {
+      setTransactions([]);
+      setLoading(false);
+    }
+  }, [user]);
 
   const fetchTransactions = async () => {
+    if (!user) return;
     setLoading(true);
     const { data, error } = await supabase
       .from('transactions')
       .select('*')
+      .eq('user_id', user.id)
       .order('date', { ascending: false });
 
     if (error) {
       console.error('Erro ao buscar transações no Supabase:', error);
     } else if (data) {
-      // Garantir que os dados do banco venham com os tipos corretos
       const formattedData = data.map(item => ({
         ...item,
         amount: Number(item.amount)
@@ -32,10 +40,12 @@ export function useTransactions() {
   };
 
   const addTransaction = async (t: Omit<Transaction, 'id'>) => {
-    // Insere no banco
+    if (!user) return;
+    
+    // Insere no banco vinculando ao user_id
     const { data, error } = await supabase
       .from('transactions')
-      .insert([t])
+      .insert([{ ...t, user_id: user.id }])
       .select();
 
     if (error) {
@@ -45,7 +55,6 @@ export function useTransactions() {
 
     if (data && data[0]) {
       const novaTransacao = { ...data[0], amount: Number(data[0].amount) } as Transaction;
-      // Atualiza estado local mantendo a ordem (mais recente primeiro)
       setTransactions(prev => {
         const atualizadas = [novaTransacao, ...prev];
         return atualizadas.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -54,18 +63,20 @@ export function useTransactions() {
   };
 
   const deleteTransaction = async (id: string) => {
-    // Apaga do banco
+    if (!user) return;
+
+    // Apaga do banco garantindo que pertence ao usuário
     const { error } = await supabase
       .from('transactions')
       .delete()
-      .eq('id', id);
+      .eq('id', id)
+      .eq('user_id', user.id);
 
     if (error) {
       console.error('Erro ao excluir transação:', error);
       return;
     }
 
-    // Atualiza estado local
     setTransactions(prev => prev.filter(t => t.id !== id));
   };
 
