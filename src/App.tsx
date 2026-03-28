@@ -25,7 +25,7 @@ function App() {
   const [formInitialType, setFormInitialType] = useState<TransactionType>('EXPENSE');
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedFilterCategory, setSelectedFilterCategory] = useState<string | null>(null);
+  const [selectedFilterCategories, setSelectedFilterCategories] = useState<string[]>([]);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   // Sort categories alphabetically
@@ -68,9 +68,10 @@ function App() {
       const [y, m] = t.date.split('-');
       const matchesDate = Number(y) === selectedYear && Number(m) === selectedMonth;
       const matchesSearch = t.description.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = !selectedFilterCategory || 
-                              t.category === selectedFilterCategory || 
-                              (allCategories.find(c => c.id === selectedFilterCategory)?.name === t.category);
+      
+      const matchesCategory = selectedFilterCategories.length === 0 || 
+                              selectedFilterCategories.includes(t.category) || 
+                              selectedFilterCategories.some(id => allCategories.find(c => c.id === id)?.name === t.category);
       
       return matchesDate && matchesSearch && matchesCategory;
     });
@@ -89,7 +90,7 @@ function App() {
       { balance: 0, income: 0, expense: 0 }
     );
     return { ...totals, filteredTransactions: filtered };
-  }, [transactions, selectedMonth, selectedYear, searchQuery, selectedFilterCategory, allCategories]);
+  }, [transactions, selectedMonth, selectedYear, searchQuery, selectedFilterCategories, allCategories]);
 
   if (authLoading) {
     return (
@@ -210,24 +211,26 @@ function App() {
                       onClick={() => setIsFilterVisible(!isFilterVisible)}
                       className={cn(
                         "flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-300",
-                        selectedFilterCategory 
+                        selectedFilterCategories.length > 0
                           ? "bg-neon-blue/10 border-neon-blue/30 text-neon-blue shadow-[0_0_10px_rgba(0,229,255,0.1)]" 
                           : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20"
                       )}
                     >
                       <div className="relative">
                         <Filter className="w-3.5 h-3.5" />
-                        {selectedFilterCategory && (
+                        {selectedFilterCategories.length > 0 && (
                           <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-neon-blue rounded-full shadow-[0_0_5px_rgba(0,229,255,1)]" />
                         )}
                       </div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider">Filtro por Categoria</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">
+                        Filtro por Categoria {selectedFilterCategories.length > 0 && `(${selectedFilterCategories.length})`}
+                      </span>
                       <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-300", isFilterVisible && "rotate-180")} />
                     </button>
                     
-                    {selectedFilterCategory && (
+                    {selectedFilterCategories.length > 0 && (
                       <button 
-                        onClick={() => setSelectedFilterCategory(null)}
+                        onClick={() => setSelectedFilterCategories([])}
                         className="text-[10px] font-bold text-gray-500 hover:text-white transition-colors"
                       >
                         LIMPAR
@@ -245,10 +248,10 @@ function App() {
                       >
                         <div className="flex flex-wrap gap-2 pb-4">
                           <button
-                            onClick={() => setSelectedFilterCategory(null)}
+                            onClick={() => setSelectedFilterCategories([])}
                             className={cn(
                               "px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300",
-                              selectedFilterCategory === null 
+                              selectedFilterCategories.length === 0
                                 ? "bg-neon-blue/20 border-neon-blue/40 text-neon-blue shadow-[0_0_15px_rgba(0,229,255,0.1)]" 
                                 : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20"
                             )}
@@ -256,12 +259,18 @@ function App() {
                             TODAS
                           </button>
                           {sortedCategories.map(cat => {
-                            const isSelected = selectedFilterCategory === cat.id;
+                            const isSelected = selectedFilterCategories.includes(cat.id);
                             const Icon = cat.icon;
                             return (
                               <button
                                 key={cat.id}
-                                onClick={() => setSelectedFilterCategory(isSelected ? null : cat.id)}
+                                onClick={() => {
+                                  setSelectedFilterCategories(prev => 
+                                    prev.includes(cat.id) 
+                                      ? prev.filter(id => id !== cat.id) 
+                                      : [...prev, cat.id]
+                                  );
+                                }}
                                 className={cn(
                                   "px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300 flex items-center gap-2",
                                   isSelected 
