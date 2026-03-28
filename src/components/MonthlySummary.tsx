@@ -47,7 +47,7 @@ export function MonthlySummary({ transactions, month, year }: Props) {
       map.set(t.category, (map.get(t.category) || 0) + t.amount);
     });
     return Array.from(map.entries()).map(([catId, amount]) => {
-      const c = allCategories.find(c => c.id === catId);
+      const c = allCategories.find(c => c.id === catId || c.name === catId);
       return {
         name: c?.name || catId,
         value: amount,

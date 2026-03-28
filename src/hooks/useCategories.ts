@@ -2,7 +2,24 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { CATEGORIES as DEFAULT_CATEGORIES } from '../constants/categories';
-import { Star, PlusCircle, HelpCircle, LucideIcon } from 'lucide-react';
+import { 
+  Star, 
+  PlusCircle, 
+  HelpCircle, 
+  LucideIcon, 
+  Tag, 
+  Heart, 
+  ShoppingBag, 
+  Wallet, 
+  Zap, 
+  Gift, 
+  Coffee,
+  Smartphone,
+  Cpu,
+  Gamepad2,
+  Plane,
+  Bike
+} from 'lucide-react';
 
 export interface Category {
   id: string;
@@ -17,6 +34,18 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Star,
   PlusCircle,
   HelpCircle,
+  Tag,
+  Heart,
+  ShoppingBag,
+  Wallet,
+  Zap,
+  Gift,
+  Coffee,
+  Smartphone,
+  Cpu,
+  Gamepad2,
+  Plane,
+  Bike
 };
 
 export function useCategories() {
@@ -42,7 +71,7 @@ export function useCategories() {
       console.error('Erro ao buscar categorias:', error);
     } else {
       const formatted = data.map((cat: any) => ({
-        id: cat.name, // Use name as ID to match legacy behavior/comparison
+        id: `custom_${cat.name}`, // Use prefixed name as ID to avoid collisions
         name: cat.name,
         icon: ICON_MAP[cat.icon_name] || Star,
         color: cat.color || 'text-neon-blue',
@@ -61,7 +90,7 @@ export function useCategories() {
       user_id: user.id,
       name,
       type,
-      icon_name: 'PlusCircle',
+      icon_name: 'Star', // Default icon for custom
       color: type === 'INCOME' ? 'text-neon-green' : 'text-neon-pink',
     };
 
@@ -76,7 +105,7 @@ export function useCategories() {
       return { error };
     } else {
       const formatted: Category = {
-        id: data.name,
+        id: `custom_${data.name}`,
         name: data.name,
         icon: ICON_MAP[data.icon_name] || Star,
         color: data.color,
@@ -91,7 +120,7 @@ export function useCategories() {
   const deleteCategory = async (name: string, type: 'INCOME' | 'EXPENSE') => {
     if (!user) return;
 
-    // 1. Delete transactions first (cascade delete manually because there is no FK)
+    // 1. Delete transactions first
     const { error: tError } = await supabase
       .from('transactions')
       .delete()
@@ -151,16 +180,16 @@ export function useCategories() {
     }
 
     setCustomCategories(prev => prev.map(c => 
-      (c.name === oldName && c.type === type) ? { ...c, name: newName, id: newName } : c
+      (c.name === oldName && c.type === type) ? { ...c, name: newName, id: `custom_${newName}` } : c
     ));
     return { success: true };
   };
 
-  const allCategories = [
+  const allCategories: Category[] = [
     ...Object.values(DEFAULT_CATEGORIES).map(c => ({
       ...c,
-      id: c.id, // Keep original ID for default ones
-      type: (c.id === 'SALARY' || c.id === 'FREELANCE' || c.id === 'OTHER_INCOME') ? 'INCOME' : 'EXPENSE'
+      id: c.id, 
+      type: (c.id === 'SALARY' || c.id === 'FREELANCE' || c.id === 'OTHER_INCOME') ? 'INCOME' : 'EXPENSE' as 'EXPENSE' | 'INCOME'
     })),
     ...customCategories,
   ];
@@ -170,6 +199,13 @@ export function useCategories() {
 
   const getExpenseCategories = () => 
     allCategories.filter(c => c.type === 'EXPENSE');
+
+  // Diagnostic log for the reported issue
+  useEffect(() => {
+    if (customCategories.length > 0) {
+      console.log('[DEBUG] Custom Categories:', customCategories.map(c => ({id: c.id, name: c.name, type: c.type, icon: c.icon.name || 'LucideIcon'})));
+    }
+  }, [customCategories]);
 
   return { 
     customCategories, 
