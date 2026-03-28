@@ -11,7 +11,7 @@ import { useTransactions } from './hooks/useTransactions';
 import { useCategories } from './hooks/useCategories';
 import { useAuth } from './contexts/AuthContext';
 import { Auth } from './components/Auth';
-import { ListIcon, PieChart, TrendingUp, Calendar as CalendarIcon, Search, Filter } from 'lucide-react';
+import { ListIcon, PieChart, TrendingUp, Calendar as CalendarIcon, Search, Filter, ChevronDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from './utils/cn';
 import { TransactionType } from './types';
@@ -26,6 +26,12 @@ function App() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilterCategory, setSelectedFilterCategory] = useState<string | null>(null);
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+
+  // Sort categories alphabetically
+  const sortedCategories = useMemo(() => {
+    return [...allCategories].sort((a, b) => a.name.localeCompare(b.name));
+  }, [allCategories]);
   
   const currentDate = useMemo(() => new Date(), []);
   
@@ -198,42 +204,80 @@ function App() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 shrink-0">
-                    <Filter className="w-3.5 h-3.5 text-neon-blue" />
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Filtros</span>
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setIsFilterVisible(!isFilterVisible)}
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-300",
+                        selectedFilterCategory 
+                          ? "bg-neon-blue/10 border-neon-blue/30 text-neon-blue shadow-[0_0_10px_rgba(0,229,255,0.1)]" 
+                          : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20"
+                      )}
+                    >
+                      <div className="relative">
+                        <Filter className="w-3.5 h-3.5" />
+                        {selectedFilterCategory && (
+                          <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-neon-blue rounded-full shadow-[0_0_5px_rgba(0,229,255,1)]" />
+                        )}
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Filtro por Categoria</span>
+                      <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-300", isFilterVisible && "rotate-180")} />
+                    </button>
+                    
+                    {selectedFilterCategory && (
+                      <button 
+                        onClick={() => setSelectedFilterCategory(null)}
+                        className="text-[10px] font-bold text-gray-500 hover:text-white transition-colors"
+                      >
+                        LIMPAR
+                      </button>
+                    )}
                   </div>
                   
-                  <button
-                    onClick={() => setSelectedFilterCategory(null)}
-                    className={cn(
-                      "flex-shrink-0 px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300",
-                      selectedFilterCategory === null 
-                        ? "bg-neon-blue/20 border-neon-blue/40 text-neon-blue shadow-[0_0_15px_rgba(0,229,255,0.1)]" 
-                        : "bg-white/5 border-white/10 text-gray-500 hover:border-white/20"
-                    )}
-                  >
-                    TODAS
-                  </button>
-                  {allCategories.map(cat => {
-                    const isSelected = selectedFilterCategory === cat.id;
-                    const Icon = cat.icon;
-                    return (
-                      <button
-                        key={cat.id}
-                        onClick={() => setSelectedFilterCategory(isSelected ? null : cat.id)}
-                        className={cn(
-                          "flex-shrink-0 px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300 flex items-center gap-2",
-                          isSelected 
-                            ? "bg-white/10 border-white/20 text-white shadow-[0_0_15px_rgba(255,255,255,0.05)]" 
-                            : "bg-white/5 border-white/10 text-gray-500 hover:border-white/20 text-white/50"
-                        )}
+                  <AnimatePresence>
+                    {isFilterVisible && (
+                      <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
                       >
-                        <Icon className={cn("w-3 h-3", isSelected ? cat.color : "text-gray-500")} />
-                        {cat.name.toUpperCase()}
-                      </button>
-                    );
-                  })}
+                        <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-none">
+                          <button
+                            onClick={() => setSelectedFilterCategory(null)}
+                            className={cn(
+                              "flex-shrink-0 px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300",
+                              selectedFilterCategory === null 
+                                ? "bg-neon-blue/20 border-neon-blue/40 text-neon-blue shadow-[0_0_15px_rgba(0,229,255,0.1)]" 
+                                : "bg-white/5 border-white/10 text-gray-500 hover:border-white/20"
+                            )}
+                          >
+                            TODAS
+                          </button>
+                          {sortedCategories.map(cat => {
+                            const isSelected = selectedFilterCategory === cat.id;
+                            const Icon = cat.icon;
+                            return (
+                              <button
+                                key={cat.id}
+                                onClick={() => setSelectedFilterCategory(isSelected ? null : cat.id)}
+                                className={cn(
+                                  "flex-shrink-0 px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300 flex items-center gap-2",
+                                  isSelected 
+                                    ? "bg-white/10 border-white/20 text-white shadow-[0_0_15px_rgba(255,255,255,0.05)]" 
+                                    : "bg-white/5 border-white/10 text-gray-500 hover:border-white/20 text-white/50"
+                                )}
+                              >
+                                <Icon className={cn("w-3 h-3", isSelected ? cat.color : "text-gray-500")} />
+                                {cat.name.toUpperCase()}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
 
