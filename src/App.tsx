@@ -198,7 +198,7 @@ function App() {
                   {searchQuery && (
                     <button 
                       onClick={() => setSearchQuery('')}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-500 hover:text-white transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-secondary hover:text-primary transition-colors"
                     >
                       LIMPAR
                     </button>
@@ -213,7 +213,7 @@ function App() {
                         "flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-300",
                         selectedFilterCategories.length > 0
                           ? "bg-neon-blue/10 border-neon-blue/30 text-neon-blue shadow-[0_0_10px_rgba(0,229,255,0.1)]" 
-                          : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20"
+                          : "bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/10 text-secondary hover:border-black/20 dark:hover:border-white/20"
                       )}
                     >
                       <div className="relative">
@@ -231,7 +231,7 @@ function App() {
                     {selectedFilterCategories.length > 0 && (
                       <button 
                         onClick={() => setSelectedFilterCategories([])}
-                        className="text-[10px] font-bold text-gray-500 hover:text-white transition-colors"
+                        className="text-[10px] font-bold text-secondary hover:text-primary transition-colors"
                       >
                         LIMPAR
                       </button>
@@ -253,7 +253,7 @@ function App() {
                               "px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300",
                               selectedFilterCategories.length === 0
                                 ? "bg-neon-blue/20 border-neon-blue/40 text-neon-blue shadow-[0_0_15px_rgba(0,229,255,0.1)]" 
-                                : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20"
+                                : "bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/10 text-secondary hover:border-black/20 dark:hover:border-white/20"
                             )}
                           >
                             TODAS
@@ -274,11 +274,11 @@ function App() {
                                 className={cn(
                                   "px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300 flex items-center gap-2",
                                   isSelected 
-                                    ? "bg-white/10 border-white/20 text-white shadow-[0_0_15px_rgba(255,255,255,0.05)]" 
-                                    : "bg-white/5 border-white/10 text-gray-500 hover:border-white/20 text-white/50"
+                                    ? "bg-black/5 dark:bg-white/10 border-black/5 dark:border-white/20 text-primary dark:text-white shadow-sm" 
+                                    : "bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/10 text-secondary hover:border-black/20 dark:hover:border-white/20 opacity-70 hover:opacity-100"
                                 )}
                               >
-                                <Icon className={cn("w-3 h-3", isSelected ? cat.color : "text-gray-500")} />
+                                <Icon className={cn("w-3 h-3", isSelected ? cat.color : "text-secondary opacity-50")} />
                                 {cat.name.toUpperCase()}
                               </button>
                             );

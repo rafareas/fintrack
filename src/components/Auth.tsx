@@ -40,7 +40,7 @@ export function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[#050505] relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden transition-colors duration-300">
       {/* Background Orbs */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-blue/20 blur-[120px] rounded-full" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-pink/10 blur-[120px] rounded-full" />
@@ -54,15 +54,15 @@ export function Auth() {
           <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-4 border border-white/10 shadow-xl">
             <Wallet className="w-8 h-8 text-neon-blue" />
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">FinTrack</h1>
-          <p className="text-gray-400 mt-2 text-center">
+          <h1 className="text-3xl font-bold text-primary tracking-tight">FinTrack</h1>
+          <p className="text-secondary mt-2 text-center">
             {isRegister ? 'Crie sua conta para começar' : 'Bem-vindo de volta! Faça seu login.'}
           </p>
         </div>
 
         <form onSubmit={handleAuth} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-400 ml-1 uppercase tracking-wider">E-mail</label>
+            <label className="text-xs font-medium text-secondary ml-1 uppercase tracking-wider">E-mail</label>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input 
@@ -77,7 +77,7 @@ export function Auth() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-400 ml-1 uppercase tracking-wider">Senha</label>
+            <label className="text-xs font-medium text-secondary ml-1 uppercase tracking-wider">Senha</label>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input 
@@ -128,8 +128,8 @@ export function Auth() {
           </button>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-white/5 text-center">
-          <p className="text-sm text-gray-400">
+        <div className="mt-8 pt-6 border-t border-black/5 dark:border-white/5 text-center">
+          <p className="text-sm text-secondary">
             {isRegister ? 'Já tem uma conta?' : 'Não tem uma conta?'}
             <button 
               onClick={() => setIsRegister(!isRegister)}
