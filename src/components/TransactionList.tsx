@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Transaction } from '../types';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { motion } from 'framer-motion';
-import { Trash2, Star, Check, X } from 'lucide-react';
+import { Trash2, Star, Check, X, Edit2 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { Category } from '../hooks/useCategories';
 
@@ -73,11 +73,11 @@ export function TransactionList({ transactions, onDelete, onUpdate, allCategorie
               const isEditing = editingId === t.id;
               
               return (
-                <div key={t.id} className="glass-panel p-4 flex items-center justify-between group hover:bg-white/5 hover:border-white/20 transition-all duration-300">
+                <div key={t.id} className="glass-panel p-4 flex items-center justify-between group/item hover:bg-white/5 hover:border-white/20 transition-all duration-300">
                   <div className="flex items-center gap-4 flex-1">
                     <div className={cn(
                       "w-11 h-11 rounded-xl flex items-center justify-center border shadow-inner transition-colors shrink-0",
-                      isIncome ? "bg-neon-green/10 text-neon-green border-neon-green/20 group-hover:bg-neon-green/20" : "bg-neon-pink/10 text-neon-pink border-neon-pink/20 group-hover:bg-neon-pink/20"
+                      isIncome ? "bg-neon-green/10 text-neon-green border-neon-green/20 group-hover/item:bg-neon-green/20" : "bg-neon-pink/10 text-neon-pink border-neon-pink/20 group-hover/item:bg-neon-pink/20"
                     )}>
                       <Icon className="w-5 h-5" />
                     </div>
@@ -103,13 +103,12 @@ export function TransactionList({ transactions, onDelete, onUpdate, allCategorie
                           </button>
                         </div>
                       ) : (
-                        <p 
-                          onClick={() => handleStartEdit(t)}
-                          className="text-white font-medium text-[15px] cursor-pointer hover:text-neon-blue transition-colors truncate"
-                          title="Clique para editar"
-                        >
-                          {t.description}
-                        </p>
+                        <div className="flex items-center gap-2 group/edit cursor-pointer" onClick={() => handleStartEdit(t)}>
+                          <p className="text-white font-medium text-[15px] truncate">
+                            {t.description}
+                          </p>
+                          <Edit2 className="w-3.5 h-3.5 text-gray-500 opacity-50 group-hover/edit:text-neon-blue group-hover/edit:opacity-100 transition-all sm:opacity-0 sm:group-hover/item:opacity-50" />
+                        </div>
                       )}
                       <p className="text-xs text-gray-400 font-medium">{categoryName}</p>
                     </div>
