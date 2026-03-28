@@ -243,14 +243,14 @@ function App() {
                         exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden"
                       >
-                        <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-none">
+                        <div className="flex flex-wrap gap-2 pb-4">
                           <button
                             onClick={() => setSelectedFilterCategory(null)}
                             className={cn(
-                              "flex-shrink-0 px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300",
+                              "px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300",
                               selectedFilterCategory === null 
                                 ? "bg-neon-blue/20 border-neon-blue/40 text-neon-blue shadow-[0_0_15px_rgba(0,229,255,0.1)]" 
-                                : "bg-white/5 border-white/10 text-gray-500 hover:border-white/20"
+                                : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20"
                             )}
                           >
                             TODAS
@@ -263,7 +263,7 @@ function App() {
                                 key={cat.id}
                                 onClick={() => setSelectedFilterCategory(isSelected ? null : cat.id)}
                                 className={cn(
-                                  "flex-shrink-0 px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300 flex items-center gap-2",
+                                  "px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300 flex items-center gap-2",
                                   isSelected 
                                     ? "bg-white/10 border-white/20 text-white shadow-[0_0_15px_rgba(255,255,255,0.05)]" 
                                     : "bg-white/5 border-white/10 text-gray-500 hover:border-white/20 text-white/50"
