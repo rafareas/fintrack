@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,6 +8,9 @@ export default {
   theme: {
     extend: {
       colors: {
+        background: 'var(--background)',
+        primary: 'var(--text-primary)',
+        secondary: 'var(--text-secondary)',
         neon: {
           green: '#00ff88',
           pink: '#ff007f',

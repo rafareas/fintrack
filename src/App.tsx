@@ -94,8 +94,8 @@ function App() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-white/10 border-t-neon-blue rounded-full animate-spin" />
+      <div className="min-h-screen bg-background flex items-center justify-center transition-colors duration-300">
+        <div className="w-12 h-12 border-4 border-gray-200 dark:border-white/10 border-t-neon-blue rounded-full animate-spin" />
       </div>
     );
   }
@@ -134,7 +134,7 @@ function App() {
           onChange={setActiveTab} 
         />
         
-        <div className="flex items-center gap-3 bg-white/5 px-4 py-2.5 rounded-xl mb-8 sm:mb-0 border border-white/10 shadow-inner">
+        <div className="flex items-center gap-3 glass-panel px-4 py-2.5 mb-8 sm:mb-0">
           <CalendarIcon className="w-4 h-4 text-neon-blue" />
           
           {activeTab !== 'annual' && (
@@ -142,28 +142,28 @@ function App() {
               <select
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                className="bg-transparent text-white font-medium text-sm outline-none cursor-pointer appearance-none"
+                className="bg-transparent text-primary font-medium text-sm outline-none cursor-pointer appearance-none"
               >
                 {Array.from({ length: 12 }).map((_, i) => {
                   const date = new Date(2000, i, 1);
                   return (
-                    <option key={i + 1} value={i + 1} className="text-gray-900">
+                    <option key={i + 1} value={i + 1} className="bg-background text-primary">
                       {date.toLocaleString('pt-BR', { month: 'long' }).replace(/^\w/, c => c.toUpperCase())}
                     </option>
                   );
                 })}
               </select>
-              <span className="text-white/30">/</span>
+              <span className="text-secondary/50">/</span>
             </>
           )}
 
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(Number(e.target.value))}
-            className="bg-transparent text-gray-300 font-medium text-sm outline-none cursor-pointer appearance-none"
+            className="bg-transparent text-secondary font-medium text-sm outline-none cursor-pointer appearance-none"
           >
             {availableYears.map(year => (
-              <option key={year} value={year} className="text-gray-900">
+              <option key={year} value={year} className="bg-background text-primary">
                 {year}
               </option>
             ))}

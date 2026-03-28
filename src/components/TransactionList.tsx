@@ -19,8 +19,8 @@ export function TransactionList({ transactions, onDelete, onUpdate, allCategorie
 
   if (transactions.length === 0) {
     return (
-      <div className="text-center py-16 glass-panel border border-white/5 shadow-none">
-        <p className="text-gray-400">Nenhuma transação encontrada no período.</p>
+      <div className="text-center py-16 glass-panel shadow-none">
+        <p className="text-secondary">Nenhuma transação encontrada no período.</p>
       </div>
     );
   }
@@ -55,8 +55,8 @@ export function TransactionList({ transactions, onDelete, onUpdate, allCategorie
           key={date}
         >
           <div className="flex items-center gap-4 mb-4">
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{formatDate(date)}</h3>
-            <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent"></div>
+            <h3 className="text-sm font-semibold text-secondary uppercase tracking-wider">{formatDate(date)}</h3>
+            <div className="flex-1 h-px bg-gradient-to-r from-gray-200 dark:from-white/10 to-transparent"></div>
           </div>
           
           <div className="space-y-3">
@@ -73,7 +73,7 @@ export function TransactionList({ transactions, onDelete, onUpdate, allCategorie
               const isEditing = editingId === t.id;
               
               return (
-                <div key={t.id} className="glass-panel p-4 flex items-center justify-between group/item hover:bg-white/5 hover:border-white/20 transition-all duration-300">
+                <div key={t.id} className="glass-panel p-4 flex items-center justify-between group/item hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300">
                   <div className="flex items-center gap-4 flex-1">
                     <div className={cn(
                       "w-11 h-11 rounded-xl flex items-center justify-center border shadow-inner transition-colors shrink-0",
@@ -104,27 +104,27 @@ export function TransactionList({ transactions, onDelete, onUpdate, allCategorie
                         </div>
                       ) : (
                         <div className="flex items-center gap-2 group/edit cursor-pointer" onClick={() => handleStartEdit(t)}>
-                          <p className="text-white font-medium text-[15px] truncate">
+                          <p className="text-primary font-medium text-[15px] truncate">
                             {t.description}
                           </p>
-                          <Edit2 className="w-3.5 h-3.5 text-gray-500 opacity-50 group-hover/edit:text-neon-blue group-hover/edit:opacity-100 transition-all sm:opacity-0 sm:group-hover/item:opacity-50" />
+                          <Edit2 className="w-3.5 h-3.5 text-secondary opacity-50 group-hover/edit:text-neon-blue group-hover/edit:opacity-100 transition-all sm:opacity-0 sm:group-hover/item:opacity-50" />
                         </div>
                       )}
-                      <p className="text-xs text-gray-400 font-medium">{categoryName}</p>
+                      <p className="text-xs text-secondary font-medium">{categoryName}</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-4">
                     <span className={cn(
                       "font-semibold tracking-wide tabular-nums",
-                      isIncome ? "text-neon-green" : "text-white"
+                      isIncome ? "text-neon-green" : "text-primary"
                     )}>
                       {isIncome ? '+' : '-'}{formatCurrency(t.amount)}
                     </span>
                     
                     <button 
                       onClick={() => onDelete(t.id)}
-                      className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all opacity-50 sm:opacity-0 sm:group-hover/item:opacity-100"
+                      className="p-2 text-secondary/60 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all opacity-50 sm:opacity-0 sm:group-hover/item:opacity-100"
                       title="Deletar transação"
                     >
                       <Trash2 className="w-5 h-5" />

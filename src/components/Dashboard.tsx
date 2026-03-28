@@ -17,31 +17,31 @@ export function Dashboard({ balance, income, expense, onAddTransaction }: Dashbo
       animate={{ opacity: 1, y: 0 }}
       className="glass-panel p-6 sm:p-8 mb-8 relative overflow-hidden"
     >
-      <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[80px]" />
+      <div className="absolute top-0 right-0 w-64 h-64 bg-neon-blue/5 rounded-full blur-[100px]" />
       <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
         <div className="flex-1">
-          <p className="text-gray-400 font-medium flex items-center gap-2 mb-2">
+          <p className="text-secondary font-medium flex items-center gap-2 mb-2">
             <Activity className="w-4 h-4 text-neon-blue" />
             Saldo Atual
           </p>
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-6">
+          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-primary mb-6">
             {formatCurrency(balance)}
           </h2>
           
           <div className="flex gap-8">
             <div className="group cursor-default">
-              <p className="text-xs text-gray-500 uppercase font-bold tracking-widest mb-1 flex items-center gap-1.5 transition-colors group-hover:text-neon-green/70">
+              <p className="text-[10px] text-secondary uppercase font-black tracking-[0.2em] mb-1 flex items-center gap-2 transition-colors group-hover:text-neon-green">
                 <ArrowUpRight className="w-3.5 h-3.5 text-neon-green" /> Entradas
               </p>
-              <p className="text-xl font-black text-neon-green drop-shadow-[0_0_10px_rgba(0,255,136,0.2)]">
+              <p className="text-2xl font-black text-neon-green dark:drop-shadow-[0_0_10px_rgba(0,255,136,0.2)]">
                 {formatCurrency(income)}
               </p>
             </div>
             <div className="group cursor-default">
-              <p className="text-xs text-gray-500 uppercase font-bold tracking-widest mb-1 flex items-center gap-1.5 transition-colors group-hover:text-neon-pink/70">
+              <p className="text-[10px] text-secondary uppercase font-black tracking-[0.2em] mb-1 flex items-center gap-2 transition-colors group-hover:text-neon-pink">
                 <ArrowDownRight className="w-3.5 h-3.5 text-neon-pink" /> Saídas
               </p>
-              <p className="text-xl font-black text-neon-pink drop-shadow-[0_0_10px_rgba(255,0,127,0.2)]">
+              <p className="text-2xl font-black text-neon-pink dark:drop-shadow-[0_0_10px_rgba(255,0,127,0.2)]">
                 {formatCurrency(expense)}
               </p>
             </div>

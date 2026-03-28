@@ -110,13 +110,13 @@ export function MonthlySummary({ transactions, month, year }: Props) {
               <Target className="w-5 h-5 text-neon-blue" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white leading-tight">Teto de Gastos</h3>
-              <p className="text-xs text-gray-400">Meta mensal personalizada</p>
+              <h3 className="text-lg font-bold text-primary leading-tight">Teto de Gastos</h3>
+              <p className="text-xs text-secondary">Meta mensal personalizada</p>
             </div>
           </div>
           <button 
             onClick={() => setShowBudgetForm(!showBudgetForm)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium text-gray-300 transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl glass-panel hover:bg-black/5 dark:hover:bg-white/10 text-sm font-medium text-secondary hover:text-primary transition-all"
           >
             {showBudgetForm ? <ChevronUp className="w-4 h-4" /> : <Settings className="w-4 h-4" />}
             {budget ? 'Ajustar Meta' : 'Definir Meta'}
@@ -133,7 +133,7 @@ export function MonthlySummary({ transactions, month, year }: Props) {
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
                 <div className="space-y-3">
-                  <label className="text-sm font-semibold text-gray-300 ml-1">Valor do Teto em Euro</label>
+                  <label className="text-sm font-semibold text-secondary ml-1">Valor do Teto em Euro</label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-neon-blue font-bold">€</span>
                     <input 
@@ -144,11 +144,11 @@ export function MonthlySummary({ transactions, month, year }: Props) {
                       className="glass-input w-full pl-10 h-12 text-lg font-bold"
                     />
                   </div>
-                  <p className="text-[10px] text-gray-500 ml-1 italic">* Valor específico para este mês e ano.</p>
+                  <p className="text-[10px] text-secondary/60 ml-1 italic">* Valor específico para este mês e ano.</p>
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-sm font-semibold text-gray-300 ml-1">Categorias que contam no teto</label>
+                  <label className="text-sm font-semibold text-secondary ml-1">Categorias que contam no teto</label>
                   <div className="flex flex-wrap gap-2">
                     {getExpenseCategories().map(cat => {
                       const isSelected = tempCategories.includes(cat.id);
@@ -160,7 +160,7 @@ export function MonthlySummary({ transactions, month, year }: Props) {
                             "px-3 py-1.5 rounded-lg border text-xs font-medium transition-all flex items-center gap-1.5",
                             isSelected 
                               ? "bg-neon-blue/20 border-neon-blue/40 text-neon-blue" 
-                              : "bg-white/5 border-white/10 text-gray-500 hover:border-white/20"
+                              : "bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/10 text-secondary hover:border-black/20 dark:hover:border-white/20"
                           )}
                         >
                           {isSelected && <Check className="w-3 h-3" />}
@@ -175,7 +175,7 @@ export function MonthlySummary({ transactions, month, year }: Props) {
               <div className="flex justify-end gap-3 mt-2">
                 <button 
                   onClick={() => setShowBudgetForm(false)}
-                  className="px-6 py-2 rounded-xl text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                  className="px-6 py-2 rounded-xl text-sm font-medium text-secondary hover:text-primary transition-colors"
                 >
                   Cancelar
                 </button>
@@ -196,14 +196,14 @@ export function MonthlySummary({ transactions, month, year }: Props) {
             <div className="bg-black/20 rounded-2xl p-6 border border-white/5 shadow-inner">
               <div className="flex justify-between items-end mb-5">
                 <div>
-                  <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Gasto Atual no Teto</p>
+                  <p className="text-xs text-secondary uppercase font-bold tracking-wider mb-1">Gasto Atual no Teto</p>
                   <p className={cn("text-4xl font-black tabular-nums", budgetProgress > 100 ? "text-neon-pink" : "text-neon-blue")}>
                     {formatCurrency(budgetActual)}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Limite Meta</p>
-                  <p className="text-2xl font-bold text-white/80">{formatCurrency(budget.limit_amount)}</p>
+                  <p className="text-xs text-secondary uppercase font-bold tracking-wider mb-1">Limite Meta</p>
+                  <p className="text-2xl font-bold text-primary/80">{formatCurrency(budget.limit_amount)}</p>
                 </div>
               </div>
               
@@ -226,17 +226,17 @@ export function MonthlySummary({ transactions, month, year }: Props) {
               </div>
 
               <div className="flex justify-between mt-4">
-                <span className="text-[11px] font-bold text-gray-500 uppercase">0%</span>
+                <span className="text-[11px] font-bold text-secondary uppercase">0%</span>
                 {budgetProgress > 100 ? (
                   <span className="text-[11px] font-bold text-neon-pink uppercase flex items-center gap-1.5 px-3 py-1 bg-neon-pink/10 rounded-lg">
                     <AlertCircle className="w-3.5 h-3.5" /> Excedeu teto em {formatCurrency(budgetActual - budget.limit_amount)}
                   </span>
                 ) : (
-                  <span className="text-[11px] font-bold text-gray-400 uppercase bg-white/5 px-3 py-1 rounded-lg">
+                  <span className="text-[11px] font-bold text-secondary uppercase bg-black/5 dark:bg-white/5 px-3 py-1 rounded-lg">
                     Restam {formatCurrency(budget.limit_amount - budgetActual)}
                   </span>
                 )}
-                <span className="text-[11px] font-bold text-gray-500 uppercase">100%</span>
+                <span className="text-[11px] font-bold text-secondary uppercase">100%</span>
               </div>
             </div>
             
@@ -249,7 +249,7 @@ export function MonthlySummary({ transactions, month, year }: Props) {
                 );
                 const displayName = c?.name || (catId.startsWith('custom_') ? catId.replace('custom_', '') : catId);
                 return (
-                  <span key={catId} className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-[11px] text-gray-400 font-semibold">
+                  <span key={catId} className="px-3 py-1 rounded-lg bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-[11px] text-secondary font-semibold">
                     {displayName}
                   </span>
                 );
@@ -257,14 +257,14 @@ export function MonthlySummary({ transactions, month, year }: Props) {
             </div>
           </div>
         ) : (
-          <div className="py-12 flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-3xl bg-black/10">
-            <div className="p-4 rounded-full bg-white/5 mb-4">
-              <Plus className="w-8 h-8 text-gray-600" />
+          <div className="py-12 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/5 rounded-3xl bg-black/5 dark:bg-black/10">
+            <div className="p-4 rounded-full bg-black/5 dark:bg-white/5 mb-4">
+              <Plus className="w-8 h-8 text-secondary" />
             </div>
-            <p className="text-gray-400 font-medium text-center">Você ainda não definiu um teto de gastos para este mês.</p>
+            <p className="text-secondary font-medium text-center">Você ainda não definiu um teto de gastos para este mês.</p>
             <button 
               onClick={() => setShowBudgetForm(true)}
-              className="mt-6 px-8 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold transition-all"
+              className="mt-6 px-8 py-3 rounded-2xl bg-primary text-background hover:opacity-90 font-bold transition-all"
             >
               Configurar Primeiro Teto
             </button>
@@ -274,7 +274,7 @@ export function MonthlySummary({ transactions, month, year }: Props) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="glass-panel p-6 border border-white/5">
-          <h3 className="text-lg font-medium text-white mb-6 flex items-center gap-2">
+          <h3 className="text-lg font-medium text-primary mb-6 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-neon-pink shadow-[0_0_10px_rgba(255,0,127,1)]"></div>
             Distribuição de Despesas
           </h3>
@@ -298,8 +298,8 @@ export function MonthlySummary({ transactions, month, year }: Props) {
                   </Pie>
                   <Tooltip 
                     formatter={(value: any) => formatCurrency(Number(value) || 0)}
-                    contentStyle={{ backgroundColor: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(10px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                    itemStyle={{ color: '#fff', fontWeight: '500' }}
+                    contentStyle={{ backgroundColor: 'var(--card-bg)', backdropFilter: 'blur(10px)', borderColor: 'var(--glass-border)', borderRadius: '12px' }}
+                    itemStyle={{ color: 'var(--text-primary)', fontWeight: '500' }}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -311,7 +311,7 @@ export function MonthlySummary({ transactions, month, year }: Props) {
           </div>
           <div className="flex flex-wrap gap-3 mt-4 justify-center">
             {expensesByCategory.map((item, i) => (
-              <div key={item.name} className="flex items-center gap-1.5 text-xs text-gray-300 font-medium">
+              <div key={item.name} className="flex items-center gap-1.5 text-xs text-secondary font-medium">
                 <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: DONUT_COLORS[i % DONUT_COLORS.length] }}></div>
                 {item.name}
               </div>
@@ -320,7 +320,7 @@ export function MonthlySummary({ transactions, month, year }: Props) {
         </div>
 
         <div className="glass-panel p-6 border border-white/5">
-          <h3 className="text-lg font-medium text-white mb-6 flex items-center gap-2">
+          <h3 className="text-lg font-medium text-primary mb-6 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-neon-blue shadow-[0_0_10px_rgba(0,229,255,1)]"></div>
             Receitas vs Despesas
           </h3>
@@ -331,9 +331,9 @@ export function MonthlySummary({ transactions, month, year }: Props) {
                 <Tooltip 
                   cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                   formatter={(value: any) => formatCurrency(Number(value) || 0)}
-                  contentStyle={{ backgroundColor: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(10px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                  itemStyle={{ color: '#fff', fontWeight: '500' }}
-                  labelStyle={{ color: '#aaa', marginBottom: '8px' }}
+                  contentStyle={{ backgroundColor: 'var(--card-bg)', backdropFilter: 'blur(10px)', borderColor: 'var(--glass-border)', borderRadius: '12px' }}
+                  itemStyle={{ color: 'var(--text-primary)', fontWeight: '500' }}
+                  labelStyle={{ color: 'var(--text-secondary)', marginBottom: '8px' }}
                 />
                 <Bar dataKey="valor" radius={[6, 6, 0, 0]} maxBarSize={60}>
                   {barData.map((entry, index) => (

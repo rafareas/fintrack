@@ -113,14 +113,14 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
             <div className="w-16 h-16 bg-neon-pink/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="w-8 h-8 text-neon-pink" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Excluir Categoria?</h3>
-            <p className="text-gray-400 text-sm mb-6">
-              Isso removerá a categoria <span className="text-white font-bold">"{deletingCategory.name}"</span> da sua lista de opções, mas as transações que você já cadastrou nela serão <span className="text-neon-green font-bold">preservadas</span> no seu histórico.
+            <h3 className="text-xl font-bold text-primary mb-2">Excluir Categoria?</h3>
+            <p className="text-secondary text-sm mb-6">
+              Isso removerá a categoria <span className="text-primary font-bold">"{deletingCategory.name}"</span> da sua lista de opções, mas as transações que você já cadastrou nela serão <span className="text-neon-green font-bold">preservadas</span> no seu histórico.
             </p>
             <div className="grid grid-cols-2 gap-3">
               <button 
                 onClick={() => setDeletingCategory(null)}
-                className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-medium transition-colors"
+                className="px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-secondary font-medium transition-colors"
               >
                 Cancelar
               </button>
@@ -140,7 +140,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/70 backdrop-blur-md" 
+          className="absolute inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-md" 
           onClick={onClose} 
         />
         <motion.div 
@@ -151,20 +151,20 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
         >
           <button 
             onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full transition-colors text-gray-400"
+            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center glass-panel hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors text-secondary"
           >
             <X className="w-5 h-5" />
           </button>
           
-          <h2 className="text-2xl font-bold mb-6 text-white">Nova Transação</h2>
+          <h2 className="text-2xl font-bold mb-6 text-primary">Nova Transação</h2>
           
-          <div className="flex bg-black/40 p-1.5 rounded-xl mb-6 shadow-inner">
+          <div className="flex bg-black/5 dark:bg-black/40 p-1.5 rounded-xl mb-6 shadow-inner">
             <button
               onClick={() => { setType('EXPENSE'); setCategory(''); setIsAddingCategory(false); setEditingCategoryId(null); }}
               type="button"
               className={cn(
                 "flex-1 py-2 text-sm font-medium rounded-lg transition-all",
-                type === 'EXPENSE' ? "bg-neon-pink/20 text-neon-pink shadow-md border border-neon-pink/30" : "text-gray-400 hover:text-white"
+                type === 'EXPENSE' ? "bg-neon-pink/20 text-neon-pink shadow-md border border-neon-pink/30" : "text-secondary hover:text-primary"
               )}
             >
               Saída
@@ -174,7 +174,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
               type="button"
               className={cn(
                 "flex-1 py-2 text-sm font-medium rounded-lg transition-all",
-                type === 'INCOME' ? "bg-neon-green/20 text-neon-green shadow-md border border-neon-green/30" : "text-gray-400 hover:text-white"
+                type === 'INCOME' ? "bg-neon-green/20 text-neon-green shadow-md border border-neon-green/30" : "text-secondary hover:text-primary"
               )}
             >
               Entrada
@@ -183,9 +183,9 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Valor</label>
+              <label className="block text-sm font-medium text-secondary mb-1">Valor</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">€</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary font-medium">€</span>
                 <input 
                   type="number" 
                   step="0.01"
@@ -199,7 +199,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Descrição</label>
+              <label className="block text-sm font-medium text-secondary mb-1">Descrição</label>
               <input 
                 type="text" 
                 required
@@ -211,20 +211,19 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Data</label>
+              <label className="block text-sm font-medium text-secondary mb-1">Data</label>
               <input 
                 type="date" 
                 required
                 value={date}
                 onChange={e => setDate(e.target.value)}
                 className="glass-input w-full block"
-                style={{ colorScheme: 'dark' }}
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-gray-400">Categoria</label>
+                <label className="block text-sm font-medium text-secondary">Categoria</label>
                 <button 
                   type="button" 
                   onClick={() => { setIsAddingCategory(true); setEditingCategoryId(null); }}
@@ -243,14 +242,14 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
                   
                   if (isEditing) {
                     return (
-                      <div key={c.id} className="col-span-2 flex items-center gap-1 px-2 py-1 bg-white/5 border border-neon-blue/30 rounded-xl">
+                      <div key={c.id} className="col-span-2 flex items-center gap-1 px-2 py-1 glass-panel border-neon-blue/30">
                         <input 
                           autoFocus
                           type="text"
                           value={editingName}
                           onChange={e => setEditingName(e.target.value)}
                           onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleUpdateCategory(c.name))}
-                          className="bg-transparent border-none outline-none text-[10px] text-white w-full"
+                          className="bg-transparent border-none outline-none text-[10px] text-primary w-full"
                         />
                         <button 
                           type="button" 
@@ -272,7 +271,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
                           "w-full flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all duration-200",
                           isSelected 
                             ? selectedColor
-                            : "border-transparent text-gray-400 bg-white/5 hover:bg-white/10"
+                            : "border-transparent text-secondary bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
                         )}
                       >
                         <Icon className="w-5 h-5" />
@@ -302,14 +301,14 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
                 })}
                 
                 {isAddingCategory ? (
-                  <div className="col-span-2 flex items-center gap-1 px-2 py-1 bg-white/5 border border-white/20 rounded-xl">
+                  <div className="col-span-2 flex items-center gap-1 px-2 py-1 glass-panel border-secondary/20">
                     <input 
                       autoFocus
                       type="text"
                       value={newCategoryName}
                       onChange={e => setNewCategoryName(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddCategory())}
-                      className="bg-transparent border-none outline-none text-[10px] text-white w-full placeholder:text-gray-600"
+                      className="bg-transparent border-none outline-none text-[10px] text-primary w-full placeholder:text-secondary/50"
                       placeholder="Nome..."
                     />
                     <button 

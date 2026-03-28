@@ -51,14 +51,14 @@ export function AnnualSummary({ transactions, year }: Props) {
         
         <div className="mb-6 flex items-end justify-between relative z-10">
           <div>
-            <h3 className="text-lg font-medium text-white mb-2 flex items-center gap-2">
+            <h3 className="text-lg font-medium text-primary mb-2 flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-neon-blue shadow-[0_0_10px_rgba(0,229,255,1)]"></div>
               Entradas vs Saídas
             </h3>
-            <p className="text-sm text-gray-400">Total acumulado neste ano de {year}</p>
+            <p className="text-sm text-secondary">Total acumulado neste ano de {year}</p>
           </div>
           <div className="text-right">
-            <p className="text-3xl font-bold text-neon-blue tracking-tight">{formatCurrency(annualData[11].wealth)}</p>
+            <p className="text-3xl font-bold text-neon-blue tracking-tight drop-shadow-[0_0_15px_rgba(0,229,255,0.15)]">{formatCurrency(annualData[11].wealth)}</p>
           </div>
         </div>
         
@@ -78,9 +78,9 @@ export function AnnualSummary({ transactions, year }: Props) {
               <XAxis dataKey="month" stroke="#666" axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 12}} />
               <Tooltip 
                 formatter={(value: any, name: any) => [formatCurrency(Number(value) || 0), name === 'income' ? 'Entradas' : name === 'expense' ? 'Saídas' : name]}
-                contentStyle={{ backgroundColor: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(10px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                itemStyle={{ fontWeight: 600 }}
-                labelStyle={{ color: '#aaa', marginBottom: '8px' }}
+                contentStyle={{ backgroundColor: 'var(--card-bg)', backdropFilter: 'blur(10px)', borderColor: 'var(--glass-border)', borderRadius: '12px' }}
+                itemStyle={{ fontWeight: 600, color: 'var(--text-primary)' }}
+                labelStyle={{ color: 'var(--text-secondary)', marginBottom: '8px' }}
               />
               <Area 
                 type="monotone" 
@@ -106,24 +106,24 @@ export function AnnualSummary({ transactions, year }: Props) {
       </div>
 
       <div className="glass-panel p-6 border border-white/5">
-        <h3 className="text-lg font-medium text-white mb-6">Detalhamento Mensal</h3>
-        <div className="overflow-x-auto rounded-xl border border-white/5">
+        <h3 className="text-lg font-medium text-primary mb-6">Detalhamento Mensal</h3>
+        <div className="overflow-x-auto rounded-xl border border-black/5 dark:border-white/5">
           <table className="w-full text-left border-collapse">
-            <thead className="bg-black/20">
-              <tr className="text-gray-400 text-xs uppercase tracking-wider">
-                <th className="p-4 font-semibold">Mês</th>
-                <th className="p-4 font-semibold text-right">Entradas</th>
-                <th className="p-4 font-semibold text-right">Saídas</th>
-                <th className="p-4 font-semibold text-right">Balanço Líquido</th>
+            <thead className="bg-black/5 dark:bg-black/20">
+              <tr className="text-secondary text-xs uppercase tracking-wider font-bold">
+                <th className="p-4 font-black">Mês</th>
+                <th className="p-4 font-black text-right">Entradas</th>
+                <th className="p-4 font-black text-right">Saídas</th>
+                <th className="p-4 font-black text-right">Líquido</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-black/5 dark:divide-white/5">
               {annualData.map((d) => (
                 <tr key={d.month} className={cn(
-                  "hover:bg-white/5 transition-colors",
-                  bestSavingsMonth.net > 0 && d.month === bestSavingsMonth.month ? "bg-neon-green/5" : ""
+                  "hover:bg-black/5 dark:hover:bg-white/5 transition-colors",
+                  bestSavingsMonth.net > 0 && d.month === bestSavingsMonth.month ? "bg-neon-green/5 dark:bg-neon-green/10" : ""
                 )}>
-                  <td className="p-4 text-white font-medium flex items-center gap-2">
+                  <td className="p-4 text-primary font-bold flex items-center gap-2">
                     {d.month}
                     {bestSavingsMonth.net > 0 && d.month === bestSavingsMonth.month && (
                       <span className="tag-green select-none">Recorde</span>
