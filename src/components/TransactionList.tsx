@@ -81,7 +81,7 @@ export function TransactionList({ transactions, onDelete, onUpdate, allCategorie
                     )}>
                       <Icon className="w-5 h-5" />
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 pr-1">
                       {isEditing ? (
                         <div className="flex items-center gap-2 max-w-md">
                           <input
@@ -103,20 +103,20 @@ export function TransactionList({ transactions, onDelete, onUpdate, allCategorie
                           </button>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-2 group/edit cursor-pointer" onClick={() => handleStartEdit(t)}>
+                        <div className="flex items-center gap-2 group/edit cursor-pointer overflow-hidden" onClick={() => handleStartEdit(t)}>
                           <p className="text-primary font-medium text-[15px] truncate">
                             {t.description}
                           </p>
-                          <Edit2 className="w-3.5 h-3.5 text-secondary opacity-50 group-hover/edit:text-neon-blue group-hover/edit:opacity-100 transition-all sm:opacity-0 sm:group-hover/item:opacity-50" />
+                          <Edit2 className="w-3.5 h-3.5 text-secondary opacity-50 group-hover/edit:text-neon-blue group-hover/edit:opacity-100 transition-all shrink-0 sm:opacity-0 sm:group-hover/item:opacity-50" />
                         </div>
                       )}
                       <p className="text-xs text-secondary font-medium">{categoryName}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 sm:gap-4 shrink-0 ml-2">
                     <span className={cn(
-                      "font-semibold tracking-wide tabular-nums",
+                      "font-semibold tracking-wide tabular-nums text-sm sm:text-base whitespace-nowrap",
                       isIncome ? "text-neon-green" : "text-primary"
                     )}>
                       {isIncome ? '+' : '-'}{formatCurrency(t.amount)}
@@ -124,10 +124,10 @@ export function TransactionList({ transactions, onDelete, onUpdate, allCategorie
                     
                     <button 
                       onClick={() => onDelete(t.id)}
-                      className="p-2 text-secondary/60 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all opacity-50 sm:opacity-0 sm:group-hover/item:opacity-100"
+                      className="p-1.5 sm:p-2 text-secondary/60 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all opacity-40 sm:opacity-0 sm:group-hover/item:opacity-100 shrink-0"
                       title="Deletar transação"
                     >
-                      <Trash2 className="w-5 h-5" />
+                      <Trash2 className="w-4 h-4 sm:w-5 h-5" />
                     </button>
                   </div>
                 </div>

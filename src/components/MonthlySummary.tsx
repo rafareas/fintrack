@@ -193,11 +193,11 @@ export function MonthlySummary({ transactions, month, year }: Props) {
 
         {budget ? (
           <div className="max-w-2xl mx-auto space-y-6">
-            <div className="bg-black/20 rounded-2xl p-6 border border-white/5 shadow-inner">
+            <div className="bg-black/5 dark:bg-black/20 rounded-2xl p-4 sm:p-6 border border-black/5 dark:border-white/5 shadow-inner">
               <div className="flex justify-between items-end mb-5">
                 <div>
                   <p className="text-xs text-secondary uppercase font-bold tracking-wider mb-1">Gasto Atual no Teto</p>
-                  <p className={cn("text-4xl font-black tabular-nums", budgetProgress > 100 ? "text-neon-pink" : "text-neon-blue")}>
+                  <p className={cn("text-3xl sm:text-4xl font-black tabular-nums transition-colors", budgetProgress > 100 ? "text-neon-pink" : "text-neon-blue")}>
                     {formatCurrency(budgetActual)}
                   </p>
                 </div>

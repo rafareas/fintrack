@@ -13,6 +13,9 @@
   --glass-shadow: rgba(0, 0, 0, 0.05);
   --input-bg: rgba(15, 23, 42, 0.03);
   --card-bg: #ffffff;
+  --neon-green: 5, 150, 105;
+  --neon-pink: 219, 39, 119;
+  --neon-blue: 2, 132, 199;
 }
 
 .dark {
@@ -24,6 +27,9 @@
   --glass-shadow: rgba(0, 0, 0, 0.5);
   --input-bg: rgba(255, 255, 255, 0.03);
   --card-bg: #0a0a0a;
+  --neon-green: 0, 255, 136;
+  --neon-pink: 255, 0, 127;
+  --neon-blue: 0, 229, 255;
 }
 
 @layer base {
@@ -60,7 +66,7 @@
     background-color: var(--input-bg);
     border-color: var(--glass-border);
     color: var(--text-primary);
-    @apply backdrop-blur-sm border rounded-xl px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/50 transition-all;
+    @apply backdrop-blur-sm border rounded-xl px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue/30 transition-all;
   }
 
   .btn-primary {
