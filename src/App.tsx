@@ -12,12 +12,14 @@ import { useAuth } from './contexts/AuthContext';
 import { Auth } from './components/Auth';
 import { ListIcon, PieChart, TrendingUp, Calendar as CalendarIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { TransactionType } from './types';
 
 function App() {
   const { user, loading: authLoading } = useAuth();
   const { transactions, addTransaction, deleteTransaction } = useTransactions();
   const [activeTab, setActiveTab] = useState('transactions');
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [formInitialType, setFormInitialType] = useState<TransactionType>('EXPENSE');
   
   const currentDate = useMemo(() => new Date(), []);
   
@@ -83,6 +85,11 @@ function App() {
     return <Auth />;
   }
 
+  const handleOpenForm = (type: TransactionType) => {
+    setFormInitialType(type);
+    setIsFormOpen(true);
+  };
+
   const TABS = [
     { id: 'transactions', label: 'Transações', icon: <ListIcon className="w-4 h-4" /> },
     { id: 'monthly', label: 'Mensal', icon: <PieChart className="w-4 h-4" /> },
@@ -97,9 +104,10 @@ function App() {
         balance={balance} 
         income={income} 
         expense={expense} 
-        onAddTransaction={() => setIsFormOpen(true)} 
+        onAddTransaction={handleOpenForm} 
       />
-
+      
+      {/* Rest of the component continues... */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
         <Tabs 
           tabs={TABS} 
@@ -198,6 +206,7 @@ function App() {
         isOpen={isFormOpen} 
         onClose={() => setIsFormOpen(false)} 
         onSave={addTransaction} 
+        initialType={formInitialType}
       />
     </Layout>
   );

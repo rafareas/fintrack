@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { TransactionType, Transaction } from '../types';
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from '../constants/categories';
@@ -9,10 +9,17 @@ interface TransactionFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (transaction: Omit<Transaction, 'id'>) => void;
+  initialType?: TransactionType;
 }
 
-export function TransactionForm({ isOpen, onClose, onSave }: TransactionFormProps) {
-  const [type, setType] = useState<TransactionType>('EXPENSE');
+export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENSE' }: TransactionFormProps) {
+  const [type, setType] = useState<TransactionType>(initialType);
+
+  useEffect(() => {
+    if (isOpen) {
+      setType(initialType);
+    }
+  }, [isOpen, initialType]);
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);

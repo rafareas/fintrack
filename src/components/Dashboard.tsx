@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
-import { ArrowUpRight, ArrowDownRight, Activity } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, Activity, Plus, Minus } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
+import { TransactionType } from '../types';
 
 interface DashboardProps {
   balance: number;
   income: number;
   expense: number;
-  onAddTransaction: () => void;
+  onAddTransaction: (type: TransactionType) => void;
 }
 
 export function Dashboard({ balance, income, expense, onAddTransaction }: DashboardProps) {
@@ -16,10 +17,9 @@ export function Dashboard({ balance, income, expense, onAddTransaction }: Dashbo
       animate={{ opacity: 1, y: 0 }}
       className="glass-panel p-6 sm:p-8 mb-8 relative overflow-hidden"
     >
-      {/* Background soft glow using raw colors since tailwind classes bg-neon-blue/5 might need safelist depending on compilation, we'll stick to a safe general approach */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[80px]" />
-      <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
+      <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
+        <div className="flex-1">
           <p className="text-gray-400 font-medium flex items-center gap-2 mb-2">
             <Activity className="w-4 h-4 text-neon-blue" />
             Saldo Atual
@@ -28,28 +28,43 @@ export function Dashboard({ balance, income, expense, onAddTransaction }: Dashbo
             {formatCurrency(balance)}
           </h2>
           
-          <div className="flex gap-6">
-            <div>
-              <p className="text-sm text-gray-400 mb-1 flex items-center gap-1">
-                <ArrowUpRight className="w-4 h-4 text-neon-green" /> Entradas
+          <div className="flex gap-8">
+            <div className="group cursor-default">
+              <p className="text-xs text-gray-500 uppercase font-bold tracking-widest mb-1 flex items-center gap-1.5 transition-colors group-hover:text-neon-green/70">
+                <ArrowUpRight className="w-3.5 h-3.5 text-neon-green" /> Entradas
               </p>
-              <p className="text-lg font-semibold text-neon-green">{formatCurrency(income)}</p>
+              <p className="text-xl font-black text-neon-green drop-shadow-[0_0_10px_rgba(0,255,136,0.2)]">
+                {formatCurrency(income)}
+              </p>
             </div>
-            <div>
-              <p className="text-sm text-gray-400 mb-1 flex items-center gap-1">
-                <ArrowDownRight className="w-4 h-4 text-neon-pink" /> Saídas
+            <div className="group cursor-default">
+              <p className="text-xs text-gray-500 uppercase font-bold tracking-widest mb-1 flex items-center gap-1.5 transition-colors group-hover:text-neon-pink/70">
+                <ArrowDownRight className="w-3.5 h-3.5 text-neon-pink" /> Saídas
               </p>
-              <p className="text-lg font-semibold text-neon-pink">{formatCurrency(expense)}</p>
+              <p className="text-xl font-black text-neon-pink drop-shadow-[0_0_10px_rgba(255,0,127,0.2)]">
+                {formatCurrency(expense)}
+              </p>
             </div>
           </div>
         </div>
         
-        <button 
-          onClick={onAddTransaction}
-          className="btn-primary bg-white/10 w-full md:w-auto mt-4 md:mt-0 shadow-[0_0_20px_rgba(255,255,255,0.05)]"
-        >
-          <span className="text-xl leading-none mr-1">+</span> Nova Transação
-        </button>
+        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+          <button 
+            onClick={() => onAddTransaction('INCOME')}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-neon-green/10 hover:bg-neon-green/20 border border-neon-green/30 text-neon-green font-bold text-sm transition-all hover:scale-105 active:scale-95 shadow-lg shadow-neon-green/10"
+          >
+            <Plus className="w-4 h-4" />
+            Nova Entrada
+          </button>
+          
+          <button 
+            onClick={() => onAddTransaction('EXPENSE')}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-neon-pink/10 hover:bg-neon-pink/20 border border-neon-pink/30 text-neon-pink font-bold text-sm transition-all hover:scale-105 active:scale-95 shadow-lg shadow-neon-pink/10"
+          >
+            <Minus className="w-4 h-4" />
+            Nova Saída
+          </button>
+        </div>
       </div>
     </motion.div>
   );
