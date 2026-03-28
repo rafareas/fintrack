@@ -19,14 +19,14 @@ export function Tabs({ tabs, activeTab, onChange }: TabsProps) {
             onClick={() => onChange(tab.id)}
             className={cn(
               "relative px-4 py-2.5 text-sm font-medium rounded-xl transition-all flex items-center gap-2 whitespace-nowrap",
-              isActive ? "text-primary dark:text-white" : "text-secondary hover:text-primary hover:bg-black/5 dark:hover:bg-white/5"
+              isActive ? "text-neon-blue" : "text-secondary hover:text-primary hover:bg-black/5 dark:hover:bg-white/5"
             )}
             style={{ WebkitTapHighlightColor: 'transparent' }}
           >
             {isActive && (
               <motion.div
                 layoutId="active-tab-bubble"
-                className="absolute inset-0 bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 rounded-xl"
+                className="absolute inset-0 bg-neon-blue/10 dark:bg-neon-blue/20 border border-neon-blue/20 dark:border-neon-blue/40 rounded-xl shadow-sm"
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}
