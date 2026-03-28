@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Transaction } from '../types';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { CATEGORIES, EXPENSE_CATEGORIES } from '../constants/categories';
+import { useCategories } from '../hooks/useCategories';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatCurrency } from '../utils/formatters';
 import { useBudget } from '../hooks/useBudget';
@@ -17,6 +17,7 @@ interface Props {
 const DONUT_COLORS = ['#ff007f', '#ff0055', '#ff3399', '#ff66b2', '#ff99cc', '#e60073'];
 
 export function MonthlySummary({ transactions, month, year }: Props) {
+  const { allCategories, getExpenseCategories } = useCategories();
   const { budget, saveBudget, loading: budgetLoading } = useBudget(month, year);
   const [showBudgetForm, setShowBudgetForm] = useState(false);
   const [tempLimit, setTempLimit] = useState('');
@@ -46,13 +47,13 @@ export function MonthlySummary({ transactions, month, year }: Props) {
       map.set(t.category, (map.get(t.category) || 0) + t.amount);
     });
     return Array.from(map.entries()).map(([catId, amount]) => {
-      const c = Object.values(CATEGORIES).find(c => c.id === catId);
+      const c = allCategories.find(c => c.id === catId);
       return {
         name: c?.name || catId,
         value: amount,
       };
     }).sort((a,b) => b.value - a.value);
-  }, [filtered]);
+  }, [filtered, allCategories]);
 
   const budgetActual = useMemo(() => {
     if (!budget) return 0;
@@ -145,7 +146,7 @@ export function MonthlySummary({ transactions, month, year }: Props) {
                 <div className="space-y-3">
                   <label className="text-sm font-semibold text-gray-300 ml-1">Categorias que contam no teto</label>
                   <div className="flex flex-wrap gap-2">
-                    {EXPENSE_CATEGORIES.map(cat => {
+                    {getExpenseCategories().map(cat => {
                       const isSelected = tempCategories.includes(cat.id);
                       return (
                         <button
@@ -237,10 +238,10 @@ export function MonthlySummary({ transactions, month, year }: Props) {
             
             <div className="flex flex-wrap gap-2 justify-center">
               {budget.selected_categories.map(catId => {
-                const c = Object.values(CATEGORIES).find(c => c.id === catId);
+                const c = allCategories.find(c => c.id === catId);
                 return (
                   <span key={catId} className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-[11px] text-gray-400 font-semibold">
-                    {c?.name}
+                    {c?.name || catId}
                   </span>
                 );
               })}

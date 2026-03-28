@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 import { TransactionType, Transaction } from '../types';
-import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from '../constants/categories';
+import { useCategories } from '../hooks/useCategories';
 import { cn } from '../utils/cn';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -14,12 +14,16 @@ interface TransactionFormProps {
 
 export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENSE' }: TransactionFormProps) {
   const [type, setType] = useState<TransactionType>(initialType);
+  const { getIncomeCategories, getExpenseCategories, addCategory } = useCategories();
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
 
   useEffect(() => {
     if (isOpen) {
       setType(initialType);
     }
   }, [isOpen, initialType]);
+
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
@@ -27,7 +31,17 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
 
   if (!isOpen) return null;
 
-  const categories = type === 'INCOME' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+  const categories = type === 'INCOME' ? getIncomeCategories() : getExpenseCategories();
+
+  const handleAddCategory = async () => {
+    if (!newCategoryName.trim()) return;
+    const result = await addCategory(newCategoryName.trim(), type);
+    if (result && !('error' in result) && result.data) {
+      setCategory(result.data.id);
+      setIsAddingCategory(false);
+      setNewCategoryName('');
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,7 +88,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
           
           <div className="flex bg-black/40 p-1.5 rounded-xl mb-6 shadow-inner">
             <button
-              onClick={() => { setType('EXPENSE'); setCategory(''); }}
+              onClick={() => { setType('EXPENSE'); setCategory(''); setIsAddingCategory(false); }}
               type="button"
               className={cn(
                 "flex-1 py-2 text-sm font-medium rounded-lg transition-all",
@@ -84,7 +98,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
               Saída
             </button>
             <button
-              onClick={() => { setType('INCOME'); setCategory(''); }}
+              onClick={() => { setType('INCOME'); setCategory(''); setIsAddingCategory(false); }}
               type="button"
               className={cn(
                 "flex-1 py-2 text-sm font-medium rounded-lg transition-all",
@@ -137,7 +151,17 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Categoria</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-gray-400">Categoria</label>
+                <button 
+                  type="button" 
+                  onClick={() => setIsAddingCategory(true)}
+                  className="text-[10px] font-bold text-neon-blue uppercase tracking-wider hover:opacity-80 transition-opacity"
+                >
+                  + Nova Categoria
+                </button>
+              </div>
+
               <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
                 {categories.map(c => {
                   const Icon = c.icon;
@@ -148,7 +172,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
                     <button
                       key={c.id}
                       type="button"
-                      onClick={() => setCategory(c.id)}
+                      onClick={() => { setCategory(c.id); setIsAddingCategory(false); }}
                       className={cn(
                         "flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all duration-200",
                         isSelected 
@@ -161,6 +185,27 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
                     </button>
                   )
                 })}
+                
+                {isAddingCategory ? (
+                  <div className="col-span-2 flex items-center gap-1 px-2 py-1 bg-white/5 border border-white/20 rounded-xl">
+                    <input 
+                      autoFocus
+                      type="text"
+                      value={newCategoryName}
+                      onChange={e => setNewCategoryName(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddCategory())}
+                      className="bg-transparent border-none outline-none text-[10px] text-white w-full placeholder:text-gray-600"
+                      placeholder="Nome..."
+                    />
+                    <button 
+                      type="button" 
+                      onClick={handleAddCategory}
+                      className="p-1 text-neon-green hover:bg-neon-green/10 rounded-lg transition-colors"
+                    >
+                      <Check className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : null}
               </div>
             </div>
 
