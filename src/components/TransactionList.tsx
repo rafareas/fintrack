@@ -124,7 +124,7 @@ export function TransactionList({ transactions, onDelete, onUpdate, allCategorie
                     
                     <button 
                       onClick={() => onDelete(t.id)}
-                      className="opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                      className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all opacity-50 sm:opacity-0 sm:group-hover/item:opacity-100"
                       title="Deletar transação"
                     >
                       <Trash2 className="w-5 h-5" />
