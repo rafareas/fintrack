@@ -4,13 +4,15 @@ import { formatCurrency, formatDate } from '../utils/formatters';
 import { motion } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { Category } from '../hooks/useCategories';
 
 interface TransactionListProps {
   transactions: Transaction[];
   onDelete: (id: string) => void;
+  allCategories: Category[];
 }
 
-export function TransactionList({ transactions, onDelete }: TransactionListProps) {
+export function TransactionList({ transactions, onDelete, allCategories }: TransactionListProps) {
   if (transactions.length === 0) {
     return (
       <div className="text-center py-16 glass-panel border border-white/5 shadow-none">
@@ -43,7 +45,7 @@ export function TransactionList({ transactions, onDelete }: TransactionListProps
           
           <div className="space-y-3">
             {grouped[date].map((t) => {
-              const cat = Object.values(CATEGORIES).find(c => c.id === t.category) || CATEGORIES.FOOD;
+              const cat = allCategories.find(c => c.id === t.category || c.name === t.category) || CATEGORIES.FOOD;
               const Icon = cat.icon;
               const isIncome = t.type === 'INCOME';
               

@@ -8,6 +8,7 @@ import { TransactionForm } from './components/TransactionForm';
 import { MonthlySummary } from './components/MonthlySummary';
 import { AnnualSummary } from './components/AnnualSummary';
 import { useTransactions } from './hooks/useTransactions';
+import { useCategories } from './hooks/useCategories';
 import { useAuth } from './contexts/AuthContext';
 import { Auth } from './components/Auth';
 import { ListIcon, PieChart, TrendingUp, Calendar as CalendarIcon } from 'lucide-react';
@@ -17,6 +18,7 @@ import { TransactionType } from './types';
 function App() {
   const { user, loading: authLoading } = useAuth();
   const { transactions, addTransaction, deleteTransaction, fetchTransactions } = useTransactions();
+  const { allCategories } = useCategories();
   const [activeTab, setActiveTab] = useState('transactions');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formInitialType, setFormInitialType] = useState<TransactionType>('EXPENSE');
@@ -165,6 +167,7 @@ function App() {
               <TransactionList 
                 transactions={filteredTransactions} 
                 onDelete={deleteTransaction} 
+                allCategories={allCategories}
               />
             </motion.div>
           )}

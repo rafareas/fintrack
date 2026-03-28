@@ -121,11 +121,12 @@ export function useCategories() {
     if (!user) return;
 
     // 1. Delete transactions first
+    const categoryIdentifiers = [name, `custom_${name}`];
     const { error: tError } = await supabase
       .from('transactions')
       .delete()
       .eq('user_id', user.id)
-      .eq('category', name)
+      .in('category', categoryIdentifiers)
       .eq('type', type);
 
     if (tError) {
@@ -154,11 +155,12 @@ export function useCategories() {
     if (!user) return;
 
     // 1. Update transactions first
+    const categoryIdentifiers = [oldName, `custom_${oldName}`];
     const { error: tError } = await supabase
       .from('transactions')
-      .update({ category: newName })
+      .update({ category: `custom_${newName}` })
       .eq('user_id', user.id)
-      .eq('category', oldName)
+      .in('category', categoryIdentifiers)
       .eq('type', type);
 
     if (tError) {
