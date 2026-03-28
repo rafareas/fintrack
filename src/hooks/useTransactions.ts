@@ -80,5 +80,21 @@ export function useTransactions() {
     setTransactions(prev => prev.filter(t => t.id !== id));
   };
 
-  return { transactions, addTransaction, deleteTransaction, fetchTransactions, loading };
+  const updateTransaction = async (id: string, updates: Partial<Transaction>) => {
+    if (!user) return;
+    const { error } = await supabase
+      .from('transactions')
+      .update(updates)
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error('Erro ao atualizar transação:', error);
+      return;
+    }
+
+    setTransactions(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
+  };
+
+  return { transactions, addTransaction, deleteTransaction, updateTransaction, fetchTransactions, loading };
 }

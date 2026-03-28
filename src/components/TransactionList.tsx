@@ -1,17 +1,22 @@
+import { useState } from 'react';
 import { Transaction } from '../types';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { motion } from 'framer-motion';
-import { Trash2, HelpCircle } from 'lucide-react';
+import { Trash2, Star, Check, X } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { Category } from '../hooks/useCategories';
 
 interface TransactionListProps {
   transactions: Transaction[];
   onDelete: (id: string) => void;
+  onUpdate: (id: string, updates: Partial<Transaction>) => void;
   allCategories: Category[];
 }
 
-export function TransactionList({ transactions, onDelete, allCategories }: TransactionListProps) {
+export function TransactionList({ transactions, onDelete, onUpdate, allCategories }: TransactionListProps) {
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState('');
+
   if (transactions.length === 0) {
     return (
       <div className="text-center py-16 glass-panel border border-white/5 shadow-none">
@@ -19,6 +24,18 @@ export function TransactionList({ transactions, onDelete, allCategories }: Trans
       </div>
     );
   }
+
+  const handleStartEdit = (t: Transaction) => {
+    setEditingId(t.id);
+    setEditValue(t.description);
+  };
+
+  const handleSave = (id: string) => {
+    if (editValue.trim()) {
+      onUpdate(id, { description: editValue.trim() });
+    }
+    setEditingId(null);
+  };
 
   const grouped = transactions.reduce((acc, t) => {
     if (!acc[t.date]) acc[t.date] = [];
@@ -50,28 +67,57 @@ export function TransactionList({ transactions, onDelete, allCategories }: Trans
                 (c.name && `custom_${c.name}` === t.category)
               );
               
-              const Icon = cat ? cat.icon : HelpCircle;
+              const Icon = cat ? cat.icon : Star;
               const categoryName = cat ? cat.name : (t.category?.toString().startsWith('custom_') ? t.category.replace('custom_', '') : t.category);
               const isIncome = t.type === 'INCOME';
+              const isEditing = editingId === t.id;
               
               return (
                 <div key={t.id} className="glass-panel p-4 flex items-center justify-between group hover:bg-white/5 hover:border-white/20 transition-all duration-300">
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 flex-1">
                     <div className={cn(
-                      "w-11 h-11 rounded-xl flex items-center justify-center border shadow-inner transition-colors",
+                      "w-11 h-11 rounded-xl flex items-center justify-center border shadow-inner transition-colors shrink-0",
                       isIncome ? "bg-neon-green/10 text-neon-green border-neon-green/20 group-hover:bg-neon-green/20" : "bg-neon-pink/10 text-neon-pink border-neon-pink/20 group-hover:bg-neon-pink/20"
                     )}>
                       <Icon className="w-5 h-5" />
                     </div>
-                    <div>
-                      <p className="text-white font-medium text-[15px]">{t.description}</p>
+                    <div className="flex-1 min-w-0">
+                      {isEditing ? (
+                        <div className="flex items-center gap-2 max-w-md">
+                          <input
+                            autoFocus
+                            type="text"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleSave(t.id);
+                              if (e.key === 'Escape') setEditingId(null);
+                            }}
+                            className="glass-input h-8 py-0 px-3 text-sm flex-1"
+                          />
+                          <button onClick={() => handleSave(t.id)} className="text-neon-green p-1 hover:bg-neon-green/10 rounded">
+                            <Check className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => setEditingId(null)} className="text-gray-500 p-1 hover:bg-white/5 rounded">
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ) : (
+                        <p 
+                          onClick={() => handleStartEdit(t)}
+                          className="text-white font-medium text-[15px] cursor-pointer hover:text-neon-blue transition-colors truncate"
+                          title="Clique para editar"
+                        >
+                          {t.description}
+                        </p>
+                      )}
                       <p className="text-xs text-gray-400 font-medium">{categoryName}</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-4">
                     <span className={cn(
-                      "font-semibold tracking-wide",
+                      "font-semibold tracking-wide tabular-nums",
                       isIncome ? "text-neon-green" : "text-white"
                     )}>
                       {isIncome ? '+' : '-'}{formatCurrency(t.amount)}

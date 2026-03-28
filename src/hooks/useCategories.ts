@@ -124,8 +124,21 @@ export function useCategories() {
   const deleteCategory = async (name: string, type: 'INCOME' | 'EXPENSE') => {
     if (!user) return;
 
-    // 1. We no longer delete transactions to preserve financial history.
-    // The resilient TransactionList will show the raw name/id for legacy records.
+    // 1. Before deleting the category record, we "denormalize" the name into transactions
+    // so that the history remains readable even without the category record.
+    const catId = getCategoryIdByName(name, type);
+    const categoryIdentifiers = [name];
+    if (catId) categoryIdentifiers.push(catId);
+    if (name.startsWith('custom_')) categoryIdentifiers.push(name.replace('custom_', ''));
+    else categoryIdentifiers.push(`custom_${name}`);
+
+    // Update transactions to use the NAME as a permanent fallback
+    await supabase
+      .from('transactions')
+      .update({ category: name })
+      .eq('user_id', user.id)
+      .in('category', categoryIdentifiers)
+      .eq('type', type);
     
     // 2. Delete the category itself
     const { error: cError } = await supabase

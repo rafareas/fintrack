@@ -17,7 +17,7 @@ import { TransactionType } from './types';
 
 function App() {
   const { user, loading: authLoading } = useAuth();
-  const { transactions, addTransaction, deleteTransaction, fetchTransactions } = useTransactions();
+  const { transactions, addTransaction, deleteTransaction, updateTransaction, fetchTransactions } = useTransactions();
   const { allCategories } = useCategories();
   const [activeTab, setActiveTab] = useState('transactions');
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -167,6 +167,7 @@ function App() {
               <TransactionList 
                 transactions={filteredTransactions} 
                 onDelete={deleteTransaction} 
+                onUpdate={updateTransaction}
                 allCategories={allCategories}
               />
             </motion.div>
