@@ -11,8 +11,9 @@ import { useTransactions } from './hooks/useTransactions';
 import { useCategories } from './hooks/useCategories';
 import { useAuth } from './contexts/AuthContext';
 import { Auth } from './components/Auth';
-import { ListIcon, PieChart, TrendingUp, Calendar as CalendarIcon } from 'lucide-react';
+import { ListIcon, PieChart, TrendingUp, Calendar as CalendarIcon, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { cn } from './utils/cn';
 import { TransactionType } from './types';
 
 function App() {
@@ -22,6 +23,9 @@ function App() {
   const [activeTab, setActiveTab] = useState('transactions');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formInitialType, setFormInitialType] = useState<TransactionType>('EXPENSE');
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedFilterCategory, setSelectedFilterCategory] = useState<string | null>(null);
   
   const currentDate = useMemo(() => new Date(), []);
   
@@ -56,7 +60,13 @@ function App() {
   const { balance, income, expense, filteredTransactions } = useMemo(() => {
     const filtered = transactions.filter(t => {
       const [y, m] = t.date.split('-');
-      return Number(y) === selectedYear && Number(m) === selectedMonth;
+      const matchesDate = Number(y) === selectedYear && Number(m) === selectedMonth;
+      const matchesSearch = t.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = !selectedFilterCategory || 
+                              t.category === selectedFilterCategory || 
+                              (allCategories.find(c => c.id === selectedFilterCategory)?.name === t.category);
+      
+      return matchesDate && matchesSearch && matchesCategory;
     });
 
     const totals = filtered.reduce(
@@ -73,7 +83,7 @@ function App() {
       { balance: 0, income: 0, expense: 0 }
     );
     return { ...totals, filteredTransactions: filtered };
-  }, [transactions, selectedMonth, selectedYear]);
+  }, [transactions, selectedMonth, selectedYear, searchQuery, selectedFilterCategory, allCategories]);
 
   if (authLoading) {
     return (
@@ -163,7 +173,65 @@ function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
+              className="space-y-6"
             >
+              {/* Search and Category Filters */}
+              <div className="space-y-4">
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-neon-blue transition-colors">
+                    <Search className="w-4 h-4" />
+                  </div>
+                  <input 
+                    type="text" 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Pesquisar por descrição..."
+                    className="glass-input w-full pl-11 h-12 text-sm"
+                  />
+                  {searchQuery && (
+                    <button 
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-500 hover:text-white transition-colors"
+                    >
+                      LIMPAR
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                  <button
+                    onClick={() => setSelectedFilterCategory(null)}
+                    className={cn(
+                      "flex-shrink-0 px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300",
+                      selectedFilterCategory === null 
+                        ? "bg-neon-blue/20 border-neon-blue/40 text-neon-blue shadow-[0_0_15px_rgba(0,229,255,0.1)]" 
+                        : "bg-white/5 border-white/10 text-gray-500 hover:border-white/20"
+                    )}
+                  >
+                    TODAS
+                  </button>
+                  {allCategories.map(cat => {
+                    const isSelected = selectedFilterCategory === cat.id;
+                    const Icon = cat.icon;
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => setSelectedFilterCategory(isSelected ? null : cat.id)}
+                        className={cn(
+                          "flex-shrink-0 px-4 py-2 rounded-xl text-[10px] font-bold border transition-all duration-300 flex items-center gap-2",
+                          isSelected 
+                            ? "bg-white/10 border-white/20 text-white shadow-[0_0_15px_rgba(255,255,255,0.05)]" 
+                            : "bg-white/5 border-white/10 text-gray-500 hover:border-white/20 text-white/50"
+                        )}
+                      >
+                        <Icon className={cn("w-3 h-3", isSelected ? cat.color : "text-gray-500")} />
+                        {cat.name.toUpperCase()}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <TransactionList 
                 transactions={filteredTransactions} 
                 onDelete={deleteTransaction} 
