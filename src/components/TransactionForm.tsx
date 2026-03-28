@@ -115,7 +115,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Excluir Categoria?</h3>
             <p className="text-gray-400 text-sm mb-6">
-              Isso apagará permanentemente a categoria <span className="text-white font-bold">"{deletingCategory.name}"</span> e **TODAS** as transações vinculadas a ela. Tem certeza?
+              Isso removerá a categoria <span className="text-white font-bold">"{deletingCategory.name}"</span> da sua lista de opções, mas as transações que você já cadastrou nela serão <span className="text-neon-green font-bold">preservadas</span> no seu histórico.
             </p>
             <div className="grid grid-cols-2 gap-3">
               <button 

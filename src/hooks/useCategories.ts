@@ -124,25 +124,9 @@ export function useCategories() {
   const deleteCategory = async (name: string, type: 'INCOME' | 'EXPENSE') => {
     if (!user) return;
 
-    // 1. Delete transactions first
-    const catId = getCategoryIdByName(name, type);
-    const categoryIdentifiers = [name];
-    if (catId) categoryIdentifiers.push(catId);
-    if (name.startsWith('custom_')) categoryIdentifiers.push(name.replace('custom_', ''));
-    else categoryIdentifiers.push(`custom_${name}`);
-
-    const { error: tError } = await supabase
-      .from('transactions')
-      .delete()
-      .eq('user_id', user.id)
-      .in('category', categoryIdentifiers)
-      .eq('type', type);
-
-    if (tError) {
-      console.error('Erro ao excluir transações da categoria:', tError);
-      return { error: tError };
-    }
-
+    // 1. We no longer delete transactions to preserve financial history.
+    // The resilient TransactionList will show the raw name/id for legacy records.
+    
     // 2. Delete the category itself
     const { error: cError } = await supabase
       .from('custom_categories')
