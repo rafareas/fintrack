@@ -16,7 +16,7 @@ import { TransactionType } from './types';
 
 function App() {
   const { user, loading: authLoading } = useAuth();
-  const { transactions, addTransaction, deleteTransaction } = useTransactions();
+  const { transactions, addTransaction, deleteTransaction, fetchTransactions } = useTransactions();
   const [activeTab, setActiveTab] = useState('transactions');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formInitialType, setFormInitialType] = useState<TransactionType>('EXPENSE');
@@ -207,6 +207,7 @@ function App() {
         onClose={() => setIsFormOpen(false)} 
         onSave={addTransaction} 
         initialType={formInitialType}
+        onCategoriesChanged={fetchTransactions}
       />
     </Layout>
   );

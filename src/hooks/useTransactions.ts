@@ -80,5 +80,5 @@ export function useTransactions() {
     setTransactions(prev => prev.filter(t => t.id !== id));
   };
 
-  return { transactions, addTransaction, deleteTransaction, loading };
+  return { transactions, addTransaction, deleteTransaction, fetchTransactions, loading };
 }

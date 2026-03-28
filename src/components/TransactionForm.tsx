@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { X, Check } from 'lucide-react';
+import { X, Check, Edit2, Trash2, AlertTriangle } from 'lucide-react';
 import { TransactionType, Transaction } from '../types';
-import { useCategories } from '../hooks/useCategories';
+import { useCategories, Category } from '../hooks/useCategories';
 import { cn } from '../utils/cn';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -10,13 +10,18 @@ interface TransactionFormProps {
   onClose: () => void;
   onSave: (transaction: Omit<Transaction, 'id'>) => void;
   initialType?: TransactionType;
+  onCategoriesChanged?: () => void;
 }
 
-export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENSE' }: TransactionFormProps) {
+export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENSE', onCategoriesChanged }: TransactionFormProps) {
   const [type, setType] = useState<TransactionType>(initialType);
-  const { getIncomeCategories, getExpenseCategories, addCategory } = useCategories();
+  const { getIncomeCategories, getExpenseCategories, addCategory, deleteCategory, updateCategory } = useCategories();
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
+  
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState('');
+  const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -31,7 +36,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
 
   if (!isOpen) return null;
 
-  const categories = type === 'INCOME' ? getIncomeCategories() : getExpenseCategories();
+  const categories = (type === 'INCOME' ? getIncomeCategories() : getExpenseCategories()) as Category[];
 
   const handleAddCategory = async () => {
     if (!newCategoryName.trim()) return;
@@ -40,6 +45,34 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
       setCategory(result.data.id);
       setIsAddingCategory(false);
       setNewCategoryName('');
+    }
+  };
+
+  const startEditing = (cat: Category) => {
+    setEditingCategoryId(cat.id);
+    setEditingName(cat.name);
+  };
+
+  const handleUpdateCategory = async (oldName: string) => {
+    if (!editingName.trim() || editingName === oldName) {
+      setEditingCategoryId(null);
+      return;
+    }
+    const result = await updateCategory(oldName, editingName.trim(), type);
+    if (result && !('error' in result)) {
+      setEditingCategoryId(null);
+      if (category === oldName) setCategory(editingName.trim());
+      onCategoriesChanged?.();
+    }
+  };
+
+  const handleDeleteCategory = async () => {
+    if (!deletingCategory) return;
+    const result = await deleteCategory(deletingCategory.name, type);
+    if (result && !('error' in result)) {
+      if (category === deletingCategory.name) setCategory('');
+      setDeletingCategory(null);
+      onCategoriesChanged?.();
     }
   };
 
@@ -63,6 +96,46 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
 
   return (
     <AnimatePresence>
+      {deletingCategory && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
+            onClick={() => setDeletingCategory(null)} 
+          />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="glass-panel w-full max-w-sm relative z-10 p-6 border border-neon-pink/30 text-center"
+          >
+            <div className="w-16 h-16 bg-neon-pink/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle className="w-8 h-8 text-neon-pink" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Excluir Categoria?</h3>
+            <p className="text-gray-400 text-sm mb-6">
+              Isso apagará permanentemente a categoria <span className="text-white font-bold">"{deletingCategory.name}"</span> e **TODAS** as transações vinculadas a ela. Tem certeza?
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <button 
+                onClick={() => setDeletingCategory(null)}
+                className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-medium transition-colors"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={handleDeleteCategory}
+                className="px-4 py-2 rounded-xl bg-neon-pink text-black font-bold shadow-lg shadow-neon-pink/20 hover:scale-105 active:scale-95 transition-all"
+              >
+                Sim, Excluir
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <motion.div 
           initial={{ opacity: 0 }} 
@@ -88,7 +161,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
           
           <div className="flex bg-black/40 p-1.5 rounded-xl mb-6 shadow-inner">
             <button
-              onClick={() => { setType('EXPENSE'); setCategory(''); setIsAddingCategory(false); }}
+              onClick={() => { setType('EXPENSE'); setCategory(''); setIsAddingCategory(false); setEditingCategoryId(null); }}
               type="button"
               className={cn(
                 "flex-1 py-2 text-sm font-medium rounded-lg transition-all",
@@ -98,7 +171,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
               Saída
             </button>
             <button
-              onClick={() => { setType('INCOME'); setCategory(''); setIsAddingCategory(false); }}
+              onClick={() => { setType('INCOME'); setCategory(''); setIsAddingCategory(false); setEditingCategoryId(null); }}
               type="button"
               className={cn(
                 "flex-1 py-2 text-sm font-medium rounded-lg transition-all",
@@ -155,7 +228,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
                 <label className="block text-sm font-medium text-gray-400">Categoria</label>
                 <button 
                   type="button" 
-                  onClick={() => setIsAddingCategory(true)}
+                  onClick={() => { setIsAddingCategory(true); setEditingCategoryId(null); }}
                   className="text-[10px] font-bold text-neon-blue uppercase tracking-wider hover:opacity-80 transition-opacity"
                 >
                   + Nova Categoria
@@ -166,23 +239,66 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
                 {categories.map(c => {
                   const Icon = c.icon;
                   const isSelected = category === c.id;
+                  const isEditing = editingCategoryId === c.id;
                   const selectedColor = type === 'INCOME' ? 'border-neon-green/50 bg-neon-green/10 text-neon-green' : 'border-neon-pink/50 bg-neon-pink/10 text-neon-pink';
                   
+                  if (isEditing) {
+                    return (
+                      <div key={c.id} className="col-span-2 flex items-center gap-1 px-2 py-1 bg-white/5 border border-neon-blue/30 rounded-xl">
+                        <input 
+                          autoFocus
+                          type="text"
+                          value={editingName}
+                          onChange={e => setEditingName(e.target.value)}
+                          onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleUpdateCategory(c.name))}
+                          className="bg-transparent border-none outline-none text-[10px] text-white w-full"
+                        />
+                        <button 
+                          type="button" 
+                          onClick={() => handleUpdateCategory(c.name)}
+                          className="p-1 text-neon-green hover:bg-neon-green/10 rounded-lg transition-colors"
+                        >
+                          <Check className="w-4 h-4" />
+                        </button>
+                      </div>
+                    );
+                  }
+
                   return (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => { setCategory(c.id); setIsAddingCategory(false); }}
-                      className={cn(
-                        "flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all duration-200",
-                        isSelected 
-                          ? selectedColor
-                          : "border-transparent text-gray-400 bg-white/5 hover:bg-white/10"
+                    <div key={c.id} className="relative group/cat">
+                      <button
+                        type="button"
+                        onClick={() => { setCategory(c.id); setIsAddingCategory(false); setEditingCategoryId(null); }}
+                        className={cn(
+                          "w-full flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all duration-200",
+                          isSelected 
+                            ? selectedColor
+                            : "border-transparent text-gray-400 bg-white/5 hover:bg-white/10"
+                        )}
+                      >
+                        <Icon className="w-5 h-5" />
+                        <span className="text-[10px] font-medium truncate w-full text-center leading-none">{c.name}</span>
+                      </button>
+                      
+                      {c.isCustom && (
+                        <div className="absolute -top-1 -right-1 flex gap-1 opacity-0 group-hover/cat:opacity-100 transition-opacity">
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); startEditing(c); }}
+                            className="w-5 h-5 bg-black/60 backdrop-blur-md border border-white/10 rounded-lg flex items-center justify-center text-neon-blue hover:text-white transition-colors"
+                          >
+                            <Edit2 className="w-2.5 h-2.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); setDeletingCategory(c); }}
+                            className="w-5 h-5 bg-black/60 backdrop-blur-md border border-white/10 rounded-lg flex items-center justify-center text-neon-pink hover:text-white transition-colors"
+                          >
+                            <Trash2 className="w-2.5 h-2.5" />
+                          </button>
+                        </div>
                       )}
-                    >
-                      <Icon className="w-5 h-5" />
-                      <span className="text-[10px] font-medium truncate w-full text-center leading-none">{c.name}</span>
-                    </button>
+                    </div>
                   )
                 })}
                 

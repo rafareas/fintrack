@@ -88,6 +88,74 @@ export function useCategories() {
     }
   };
 
+  const deleteCategory = async (name: string, type: 'INCOME' | 'EXPENSE') => {
+    if (!user) return;
+
+    // 1. Delete transactions first (cascade delete manually because there is no FK)
+    const { error: tError } = await supabase
+      .from('transactions')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('category', name)
+      .eq('type', type);
+
+    if (tError) {
+      console.error('Erro ao excluir transações da categoria:', tError);
+      return { error: tError };
+    }
+
+    // 2. Delete the category itself
+    const { error: cError } = await supabase
+      .from('custom_categories')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('name', name)
+      .eq('type', type);
+
+    if (cError) {
+      console.error('Erro ao excluir categoria:', cError);
+      return { error: cError };
+    }
+
+    setCustomCategories(prev => prev.filter(c => !(c.name === name && c.type === type)));
+    return { success: true };
+  };
+
+  const updateCategory = async (oldName: string, newName: string, type: 'INCOME' | 'EXPENSE') => {
+    if (!user) return;
+
+    // 1. Update transactions first
+    const { error: tError } = await supabase
+      .from('transactions')
+      .update({ category: newName })
+      .eq('user_id', user.id)
+      .eq('category', oldName)
+      .eq('type', type);
+
+    if (tError) {
+      console.error('Erro ao atualizar transações da categoria:', tError);
+      return { error: tError };
+    }
+
+    // 2. Update the category itself
+    const { error: cError } = await supabase
+      .from('custom_categories')
+      .update({ name: newName })
+      .eq('user_id', user.id)
+      .eq('name', oldName)
+      .eq('type', type);
+
+    if (cError) {
+      console.error('Erro ao editar categoria:', cError);
+      return { error: cError };
+    }
+
+    setCustomCategories(prev => prev.map(c => 
+      (c.name === oldName && c.type === type) ? { ...c, name: newName, id: newName } : c
+    ));
+    return { success: true };
+  };
+
   const allCategories = [
     ...Object.values(DEFAULT_CATEGORIES).map(c => ({
       ...c,
@@ -109,6 +177,9 @@ export function useCategories() {
     getIncomeCategories, 
     getExpenseCategories, 
     addCategory, 
+    deleteCategory,
+    updateCategory,
     loading 
   };
 }
+
