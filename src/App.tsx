@@ -11,7 +11,7 @@ import { useTransactions } from './hooks/useTransactions';
 import { useCategories } from './hooks/useCategories';
 import { useAuth } from './contexts/AuthContext';
 import { Auth } from './components/Auth';
-import { ListIcon, PieChart, TrendingUp, Calendar as CalendarIcon, Search } from 'lucide-react';
+import { ListIcon, PieChart, TrendingUp, Calendar as CalendarIcon, Search, Filter } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from './utils/cn';
 import { TransactionType } from './types';
@@ -198,7 +198,12 @@ function App() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 shrink-0">
+                    <Filter className="w-3.5 h-3.5 text-neon-blue" />
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Filtros</span>
+                  </div>
+                  
                   <button
                     onClick={() => setSelectedFilterCategory(null)}
                     className={cn(
