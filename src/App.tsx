@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Layout } from './components/Layout';
 import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
@@ -20,8 +20,25 @@ function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   
   const currentDate = useMemo(() => new Date(), []);
-  const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1);
-  const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
+  
+  // Initialize from localStorage or fallback to current date
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const saved = localStorage.getItem('selectedMonth');
+    return saved ? Number(saved) : (currentDate.getMonth() + 1);
+  });
+  const [selectedYear, setSelectedYear] = useState(() => {
+    const saved = localStorage.getItem('selectedYear');
+    return saved ? Number(saved) : currentDate.getFullYear();
+  });
+
+  // Sync to localStorage when values change
+  useEffect(() => {
+    localStorage.setItem('selectedMonth', selectedMonth.toString());
+  }, [selectedMonth]);
+
+  useEffect(() => {
+    localStorage.setItem('selectedYear', selectedYear.toString());
+  }, [selectedYear]);
 
   const availableYears = useMemo(() => {
     const years = new Set(transactions.map(t => {
