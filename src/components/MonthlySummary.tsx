@@ -47,9 +47,13 @@ export function MonthlySummary({ transactions, month, year }: Props) {
       map.set(t.category, (map.get(t.category) || 0) + t.amount);
     });
     return Array.from(map.entries()).map(([catId, amount]) => {
-      const c = allCategories.find(c => c.id === catId || c.name === catId);
+      const c = allCategories.find(c => 
+        c.id === catId || 
+        c.name === catId || 
+        (c.name && `custom_${c.name}` === catId)
+      );
       return {
-        name: c?.name || catId,
+        name: c?.name || (catId.startsWith('custom_') ? catId.replace('custom_', '') : catId),
         value: amount,
       };
     }).sort((a,b) => b.value - a.value);
@@ -238,10 +242,15 @@ export function MonthlySummary({ transactions, month, year }: Props) {
             
             <div className="flex flex-wrap gap-2 justify-center">
               {budget.selected_categories.map(catId => {
-                const c = allCategories.find(c => c.id === catId);
+                const c = allCategories.find(c => 
+                  c.id === catId || 
+                  c.name === catId || 
+                  (c.name && `custom_${c.name}` === catId)
+                );
+                const displayName = c?.name || (catId.startsWith('custom_') ? catId.replace('custom_', '') : catId);
                 return (
                   <span key={catId} className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-[11px] text-gray-400 font-semibold">
-                    {c?.name || catId}
+                    {displayName}
                   </span>
                 );
               })}

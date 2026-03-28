@@ -71,7 +71,7 @@ export function useCategories() {
       console.error('Erro ao buscar categorias:', error);
     } else {
       const formatted = data.map((cat: any) => ({
-        id: `custom_${cat.name}`, // Use prefixed name as ID to avoid collisions
+        id: cat.id, // Use the actual database UUID as the identifier
         name: cat.name,
         icon: ICON_MAP[cat.icon_name] || Star,
         color: cat.color || 'text-neon-blue',
@@ -81,6 +81,10 @@ export function useCategories() {
       setCustomCategories(formatted);
     }
     setLoading(false);
+  };
+
+  const getCategoryIdByName = (name: string, type: 'INCOME' | 'EXPENSE') => {
+    return customCategories.find(c => c.name === name && c.type === type)?.id;
   };
 
   const addCategory = async (name: string, type: 'INCOME' | 'EXPENSE') => {
@@ -105,7 +109,7 @@ export function useCategories() {
       return { error };
     } else {
       const formatted: Category = {
-        id: `custom_${data.name}`,
+        id: data.id, // Use the actual database UUID
         name: data.name,
         icon: ICON_MAP[data.icon_name] || Star,
         color: data.color,
@@ -121,7 +125,12 @@ export function useCategories() {
     if (!user) return;
 
     // 1. Delete transactions first
-    const categoryIdentifiers = [name, `custom_${name}`];
+    const catId = getCategoryIdByName(name, type);
+    const categoryIdentifiers = [name];
+    if (catId) categoryIdentifiers.push(catId);
+    if (name.startsWith('custom_')) categoryIdentifiers.push(name.replace('custom_', ''));
+    else categoryIdentifiers.push(`custom_${name}`);
+
     const { error: tError } = await supabase
       .from('transactions')
       .delete()
@@ -155,10 +164,15 @@ export function useCategories() {
     if (!user) return;
 
     // 1. Update transactions first
-    const categoryIdentifiers = [oldName, `custom_${oldName}`];
+    const catId = getCategoryIdByName(oldName, type);
+    const categoryIdentifiers = [oldName];
+    if (catId) categoryIdentifiers.push(catId);
+    if (oldName.startsWith('custom_')) categoryIdentifiers.push(oldName.replace('custom_', ''));
+    else categoryIdentifiers.push(`custom_${oldName}`);
+
     const { error: tError } = await supabase
       .from('transactions')
-      .update({ category: `custom_${newName}` })
+      .update({ category: catId || newName }) // Try to use the ID if possible
       .eq('user_id', user.id)
       .in('category', categoryIdentifiers)
       .eq('type', type);

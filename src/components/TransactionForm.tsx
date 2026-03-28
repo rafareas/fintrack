@@ -61,7 +61,6 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
     const result = await updateCategory(oldName, editingName.trim(), type);
     if (result && !('error' in result)) {
       setEditingCategoryId(null);
-      if (category === oldName) setCategory(editingName.trim());
       onCategoriesChanged?.();
     }
   };
@@ -70,7 +69,7 @@ export function TransactionForm({ isOpen, onClose, onSave, initialType = 'EXPENS
     if (!deletingCategory) return;
     const result = await deleteCategory(deletingCategory.name, type);
     if (result && !('error' in result)) {
-      if (category === deletingCategory.name) setCategory('');
+      if (category === deletingCategory.id) setCategory('');
       setDeletingCategory(null);
       onCategoriesChanged?.();
     }

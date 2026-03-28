@@ -1,8 +1,7 @@
 import { Transaction } from '../types';
-import { CATEGORIES } from '../constants/categories';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { motion } from 'framer-motion';
-import { Trash2 } from 'lucide-react';
+import { Trash2, HelpCircle } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { Category } from '../hooks/useCategories';
 
@@ -45,8 +44,14 @@ export function TransactionList({ transactions, onDelete, allCategories }: Trans
           
           <div className="space-y-3">
             {grouped[date].map((t) => {
-              const cat = allCategories.find(c => c.id === t.category || c.name === t.category) || CATEGORIES.FOOD;
-              const Icon = cat.icon;
+              const cat = allCategories.find(c => 
+                c.id === t.category || 
+                c.name === t.category || 
+                (c.name && `custom_${c.name}` === t.category)
+              );
+              
+              const Icon = cat ? cat.icon : HelpCircle;
+              const categoryName = cat ? cat.name : (t.category?.toString().startsWith('custom_') ? t.category.replace('custom_', '') : t.category);
               const isIncome = t.type === 'INCOME';
               
               return (
@@ -60,7 +65,7 @@ export function TransactionList({ transactions, onDelete, allCategories }: Trans
                     </div>
                     <div>
                       <p className="text-white font-medium text-[15px]">{t.description}</p>
-                      <p className="text-xs text-gray-400 font-medium">{cat.name}</p>
+                      <p className="text-xs text-gray-400 font-medium">{categoryName}</p>
                     </div>
                   </div>
                   
