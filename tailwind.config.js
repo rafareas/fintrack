@@ -12,9 +12,9 @@ export default {
         primary: 'var(--text-primary)',
         secondary: 'var(--text-secondary)',
         neon: {
-          green: 'rgb(var(--neon-green) / <alpha-value>)',
-          pink: 'rgb(var(--neon-pink) / <alpha-value>)',
-          blue: 'rgb(var(--neon-blue) / <alpha-value>)'
+          green: 'rgba(var(--neon-green), <alpha-value>)',
+          pink: 'rgba(var(--neon-pink), <alpha-value>)',
+          blue: 'rgba(var(--neon-blue), <alpha-value>)'
         },
         dark: {
           900: '#0a0a0a',

@@ -9,13 +9,13 @@
   --text-primary: #0f172a;
   --text-secondary: #64748b;
   --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(0, 163, 204, 0.12);
+  --glass-border: rgba(15, 23, 42, 0.08);
   --glass-shadow: rgba(0, 0, 0, 0.05);
   --input-bg: rgba(15, 23, 42, 0.03);
   --card-bg: #ffffff;
-  --neon-green: 0, 179, 89;
-  --neon-pink: 219, 0, 107;
-  --neon-blue: 0, 137, 204;
+  --neon-green: 0, 166, 83;
+  --neon-pink: 209, 0, 104;
+  --neon-blue: 0, 145, 230;
 }
 
 .dark {

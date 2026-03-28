@@ -117,7 +117,7 @@ export function TransactionList({ transactions, onDelete, onUpdate, allCategorie
                   <div className="flex items-center gap-2 sm:gap-4 shrink-0 ml-2">
                     <span className={cn(
                       "font-semibold tracking-wide tabular-nums text-sm sm:text-base whitespace-nowrap",
-                      isIncome ? "text-neon-green" : "text-primary"
+                      isIncome ? "text-neon-green" : "text-neon-pink"
                     )}>
                       {isIncome ? '+' : '-'}{formatCurrency(t.amount)}
                     </span>
